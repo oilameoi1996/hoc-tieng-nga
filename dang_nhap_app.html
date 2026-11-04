@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập app Học tiếng Nga</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f6f5f2;color:#222;margin:0;padding:40px 20px;text-align:center}
+h1{font-size:22px}p{color:#555;line-height:1.5}
+button,a.nut{display:inline-block;margin-top:16px;font-size:18px;padding:14px 22px;border-radius:14px;border:0;background:#1a73e8;color:#fff;text-decoration:none;cursor:pointer}
+a.nut{background:#188038}
+</style></head>
+<body>
+<h1>☁ Đồng bộ tiến độ học</h1>
+<p id="msg">Đăng nhập Google để app trên điện thoại này dùng chung tiến độ với web và các máy khác.</p>
+<button id="dn">Đăng nhập bằng Google</button>
+<div id="ve" hidden><a class="nut" id="veApp">Quay lại app ↩</a></div>
+<script src="firebase_goi.js"></script><script src="firebase_cau_hinh.js"></script>
+<script>
+// Trang này mở trong Chrome (Google không cho đăng nhập bên trong app), đăng nhập xong gửi mã về app qua liên kết vn.hoc.tiengnga://
+var auth = FB.initializeAuth(FB.initializeApp(FIREBASE_CAU_HINH), { popupRedirectResolver: FB.browserPopupRedirectResolver });
+if (window.FIREBASE_EMU) FB.connectAuthEmulator(auth, "http://" + FIREBASE_EMU.auth, { disableWarnings: true });
+document.getElementById("dn").onclick = function () {
+  var gg = new FB.GoogleAuthProvider(); gg.setCustomParameters({ prompt: "select_account" });
+  FB.signInWithPopup(auth, gg).then(function (r) {
+    var t = FB.GoogleAuthProvider.credentialFromResult(r).idToken;
+    var link = "intent://dang-nhap?t=" + encodeURIComponent(t) + "#Intent;scheme=vn.hoc.tiengnga;package=vn.hoc.tiengnga;end";
+    document.getElementById("veApp").href = link;
+    document.getElementById("msg").textContent = "Đã đăng nhập: " + (r.user.email || "") + ". Bấm nút dưới để quay lại app.";
+    document.getElementById("dn").hidden = true; document.getElementById("ve").hidden = false;
+    location.href = link; // nếu Chrome không tự mở app thì người dùng bấm nút
+  }).catch(function (e) {
+    if (e.code !== "auth/popup-closed-by-user") document.getElementById("msg").textContent = "Lỗi đăng nhập: " + (e.code || e.message);
+  });
+};
+</script>
+</body></html>

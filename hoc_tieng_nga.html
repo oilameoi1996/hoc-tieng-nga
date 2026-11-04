@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Học tiếng Nga A1</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1d1d1f;--mute:#6b6b70;--line:#e2e0da;--acc:#1f5fbf;--ok:#1e8a4c;--bad:#c0392b}
+@media (prefers-color-scheme:dark){:root{--bg:#18181a;--card:#232326;--ink:#ececee;--mute:#a0a0a6;--line:#3a3a3f;--acc:#6fa3ff;--ok:#4cc782;--bad:#ff7a6b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 12px}
+.tabs,.row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+button,select{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer}
+button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+button:disabled{opacity:.5;cursor:default}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px}
+.big{font-size:40px;font-weight:600;line-height:1.2}
+.mid{font-size:22px}
+.mute{color:var(--mute)}
+.hint{font-size:14px;color:var(--mute);margin-top:8px}
+.opts{display:grid;gap:8px;width:100%;margin-top:12px}
+.opts button{text-align:left;padding:12px}
+.opts button.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.opts button.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.bar{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mute);margin:8px 0}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;font-size:14px}
+td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+td.l{font-size:22px;font-weight:600;white-space:nowrap}
+.tablewrap{overflow-x:auto}
+.hide{display:none}
+.stats{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:14px;margin-bottom:12px}
+.prog{flex:1;min-width:160px;height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,#f5a623,#e94e77,#7b4dff);transition:width .4s}
+.pic{font-size:64px;line-height:1;font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
+.card.t0{background:linear-gradient(160deg,var(--card) 55%,#ffd86b33)}
+.card.t1{background:linear-gradient(160deg,var(--card) 55%,#7bd88f33)}
+.card.t2{background:linear-gradient(160deg,var(--card) 55%,#6fb6ff33)}
+.card.t3{background:linear-gradient(160deg,var(--card) 55%,#ff8fa333)}
+.card.t4{background:linear-gradient(160deg,var(--card) 55%,#b48cff33)}
+.burst{position:fixed;font-size:32px;pointer-events:none;animation:fly 1s ease-out forwards;z-index:9}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+.w{display:inline-block;padding:2px 6px;margin:2px;border-radius:6px;font-size:20px}
+.w.ok{background:#1e8a4c33;color:var(--ok)}.w.bad{background:#c0392b33;color:var(--bad);text-decoration:underline wavy}
+@media (prefers-reduced-motion:reduce){.burst{display:none}}
+.tiles,.slot{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%;margin:8px 0}
+.slot{min-height:48px;padding:8px;border:2px dashed var(--line);border-radius:10px;align-items:center}
+.tile{font-size:20px;padding:8px 12px}.tile:disabled{visibility:hidden}.slot .tile{background:var(--acc);color:#fff;border-radius:8px;padding:6px 10px}
+.okt{color:var(--ok);font-size:22px;font-weight:600}.badt{color:var(--bad);font-size:22px;font-weight:600}
+.opts.four{grid-template-columns:repeat(4,1fr)}.opts.four button{text-align:center}
+.mem{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;width:100%}
+.mc{min-height:84px;font-size:15px;background:var(--acc);color:#fff}.mc.up{background:var(--card);color:var(--ink)}.mc.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.res a{display:block;padding:6px 0}.res h3{margin:16px 0 4px;font-size:17px}
+#uList .li{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:6px;cursor:pointer}
+#uList .li.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+#uList .sp{padding:4px 8px}#uList .ru{font-size:20px;font-weight:600}#uList .ph{color:var(--acc);font-size:14px}
+#uList .vi.blur{filter:blur(5px)}.tag{font-size:11px;font-weight:400;border:1px solid var(--line);border-radius:6px;padding:1px 5px;color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Học tiếng Nga A1 🇷🇺</h1>
+<div class="stats"><span id="sStreak"></span><div class="prog" title="Số câu đã thuộc"><i id="sBar"></i></div><span id="sKnown"></span><select id="voice" title="Giọng đọc"><option value="mix">🗣️ Xen kẽ nam/nữ</option><option value="nu">👩 Giọng nữ</option><option value="nam">👨 Giọng nam</option></select></div>
+<div class="tabs" id="tabs">
+  <button data-m="lesson">📚 Học theo buổi</button>
+  <button data-m="alpha">Bảng chữ cái</button>
+  <button data-m="flash">Thẻ 100 câu</button>
+  <button data-m="quiz">Trắc nghiệm</button>
+  <button data-m="speak">🎤 Luyện phát âm</button>
+  <button data-m="fill">✏️ Điền từ</button>
+  <button data-m="order">🧩 Sắp xếp câu</button>
+  <button data-m="spell">🔤 Ghép chữ</button>
+  <button data-m="listen">👂 Nghe chọn chữ</button>
+  <button data-m="mem">🃏 Lật cặp</button>
+  <button data-m="game">👾 Đẩy lùi quái vật</button>
+  <button data-m="res">📁 Tài liệu</button>
+</div>
+
+<div id="game" class="hide"><iframe id="gameFrame" allow="fullscreen *; autoplay *" allowfullscreen title="Game đẩy lùi quái vật" style="width:100%;height:92vh;border:0;border-radius:12px"></iframe></div>
+
+<div id="lesson" class="hide">
+  <div class="row"><button id="uPrev">◀</button><select id="uSel" style="flex:1;min-width:0"></select><button id="uNext">▶</button></div>
+  <div class="card" id="uHead" style="min-height:0"></div>
+  <div class="row" style="margin-top:12px;align-items:center">
+    <button id="uPlay">▶ Nghe cả buổi</button>
+    <label class="mute"><input type="checkbox" id="uRepeat" checked> Chừa thời gian đọc theo</label>
+    <label class="mute"><input type="checkbox" id="uHide"> Che nghĩa</label>
+  </div>
+  <div class="bar"><span id="uCount"></span></div>
+  <div id="uList"></div>
+</div>
+
+<div id="alpha" class="hide">
+  <div class="row"><button id="aTable" class="on">Xem bảng</button><button id="aQuiz">Đố chữ cái</button></div>
+  <div id="aTableBox" class="tablewrap"></div>
+  <div id="aQuizBox" class="hide"></div>
+</div>
+
+<div id="flash" class="hide">
+  <div class="row">
+    <select id="fTopic"></select>
+    <label class="mute" style="align-self:center"><input type="checkbox" id="fHideKnown"> Ẩn câu đã thuộc</label>
+  </div>
+  <div class="bar"><span id="fPos"></span><span id="fKnownCount"></span></div>
+  <div class="card" id="fCard"></div>
+  <div class="row" style="margin-top:12px;justify-content:center">
+    <button id="fPrev">◀ Trước</button>
+    <button id="fFlip">Lật thẻ (Space)</button>
+    <button id="fSay">🔊 Nghe</button>
+    <button id="fKnow">✓ Đã thuộc</button>
+    <button id="fNext">Sau ▶</button>
+  </div>
+</div>
+
+<div id="quiz" class="hide">
+  <div class="row">
+    <select id="qTopic"></select>
+    <select id="qDir"><option value="ru">Nga → Việt</option><option value="vi">Việt → Nga</option></select>
+    <button id="qStart">Bắt đầu 10 câu</button>
+  </div>
+  <div class="bar"><span id="qPos"></span><span id="qScore"></span></div>
+  <div class="card" id="qCard"><div class="mute">Chọn chủ đề rồi bấm “Bắt đầu”.</div></div>
+</div>
+
+<div id="speak" class="hide">
+  <div class="row"><select id="sTopic"></select><button id="sNew">🔀 Câu khác</button></div>
+  <div class="card" id="sCard"></div>
+  <div class="row" style="margin-top:12px;justify-content:center">
+    <button id="sListen">🔊 Nghe mẫu</button><button id="sMic">🎤 Bấm rồi đọc to</button>
+  </div>
+  <div class="card hide" id="sResult" style="min-height:0;margin-top:12px"></div>
+  <p class="hint">Chấm phát âm cần Chrome hoặc Edge, có mạng Internet và cho phép dùng micro khi trình duyệt hỏi. Máy nghe ra đúng chữ nào thì chữ đó xanh.</p>
+</div>
+
+<div id="fill" class="hide">
+  <div class="row"><select id="bTopic"></select><button id="bStart">Bắt đầu 10 câu</button></div>
+  <div class="bar"><span id="bPos"></span><span id="bScore"></span></div>
+  <div class="card" id="bCard"><div class="mute">Bấm “Bắt đầu 10 câu”.</div></div>
+</div>
+<div id="order" class="hide">
+  <div class="row"><select id="oTopic"></select><button id="oStart">Bắt đầu 10 câu</button></div>
+  <div class="bar"><span id="oPos"></span><span id="oScore"></span></div>
+  <div class="card" id="oCard"><div class="mute">Bấm “Bắt đầu 10 câu”.</div></div>
+</div>
+<div id="spell" class="hide">
+  <div class="row"><button id="gStart">Bắt đầu 10 từ</button></div>
+  <div class="bar"><span id="gPos"></span><span id="gScore"></span></div>
+  <div class="card" id="gCard"><div class="mute">Bấm “Bắt đầu 10 từ”.</div></div>
+</div>
+<div id="listen" class="hide">
+  <div class="row"><button id="lStart">Bắt đầu 10 từ</button></div>
+  <div class="bar"><span id="lPos"></span><span id="lScore"></span></div>
+  <div class="card" id="lCard"><div class="mute">Bấm “Bắt đầu 10 từ”.</div></div>
+</div>
+<div id="mem" class="hide">
+  <div class="row"><select id="mTopic"></select><button id="mStart">Chia bài mới</button></div>
+  <div class="bar"><span id="mPos"></span><span id="mScore"></span></div>
+  <div class="card" id="mCard"><div class="mute">Bấm “Chia bài mới”.</div></div>
+</div>
+<div id="res" class="hide res">
+  <h3>Tài liệu của dự án</h3>
+  <a href="../05_lich_hoc_toi_T2_T6/BAI_GIANG_THEO_BUOI_T2_T6.html">📘 Bài giảng 100 buổi (bấm chữ Nga để nghe)</a>
+  <a href="../05_lich_hoc_toi_T2_T6/LO_TRINH_T2_T6_30_PHUT.html">🗓️ Lộ trình tối T2–T6, 30 phút</a>
+  <a href="../05_lich_hoc_toi_T2_T6/vo_ghi/VO_GHI_THEO_BUOI_T2_T6.pdf">📝 Vở ghi theo buổi (PDF)</a>
+  <a href="../LUYEN_VIET_CHU_CAI_TIENG_NGA.pdf">✍️ Luyện viết chữ cái (PDF)</a>
+  <a href="../GIAO_TRINH_A1_16_TUAN.pdf">📗 Giáo trình A1 có hình chụp trang (PDF)</a>
+  <a href="../100_CAU_GIAO_TIEP_TIENG_NGA.xlsx">📊 100 câu giao tiếp (Excel)</a>
+  <a href="am_thanh/">🔊 Thư mục âm thanh mp3 của trang này</a>
+  <h3>Thư mục gốc trên ổ D</h3>
+  <p class="hint">Các liên kết dưới đây mở file trên máy bạn, chỉ chạy khi mở trang này trên chính máy có ổ D:\tieng nga.</p>
+  <a href="file:///D:/tieng%20nga/">📂 D:\tieng nga (toàn bộ)</a>
+  <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/">📂 Video + PDF trình độ A1 (27 bài)</a>
+  <a href="file:///D:/tieng%20nga/ngu%20phap/">📂 Video ngữ pháp</a>
+  <a href="file:///D:/tieng%20nga/giao%20tiep/">📂 Video giao tiếp</a>
+  <a href="file:///D:/tieng%20nga/SachTiengNgaVoLong/">📂 Ảnh sách tiếng Nga (22 bài)</a>
+  <a href="file:///D:/tieng%20nga/Tieng%20Nga%201%20-%20Do%20Thi%20Nho.pdf">📄 Tieng Nga 1 - Do Thi Nho.pdf</a>
+  <a href="file:///D:/tieng%20nga/%5BTNV%5D%20Doroga%20w%20Rosiju%201.pdf">📄 Дорога в Россию 1 (sách gốc)</a>
+  <h3>27 bài trình độ A1</h3>
+  <div class="tablewrap"><table><tr><td>Bài 1</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%201.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai1.pdf" style="display:inline">📄 bai1.pdf</a></td></tr><tr><td>Bài 2</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%202.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai2.pdf" style="display:inline">📄 bai2.pdf</a></td></tr><tr><td>Bài 3</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%203.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai3.pdf" style="display:inline">📄 bai3.pdf</a></td></tr><tr><td>Bài 4</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%204.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai4.pdf" style="display:inline">📄 bai4.pdf</a></td></tr><tr><td>Bài 5</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%205.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai5.pdf" style="display:inline">📄 bai5.pdf</a></td></tr><tr><td>Bài 6</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%206.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai6.pdf" style="display:inline">📄 bai6.pdf</a></td></tr><tr><td>Bài 7</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%207.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai7.pdf" style="display:inline">📄 bai7.pdf</a></td></tr><tr><td>Bài 8</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%C3%AAng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%208.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai8.pdf" style="display:inline">📄 bai8.pdf</a></td></tr><tr><td>Bài 9</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%209.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai9.pdf" style="display:inline">📄 bai9.pdf</a></td></tr><tr><td>Bài 10</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2010.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai10.pdf" style="display:inline">📄 bai10.pdf</a></td></tr><tr><td>Bài 11</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2011.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai11.pdf" style="display:inline">📄 bai11.pdf</a></td></tr><tr><td>Bài 12</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2012.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai12.pdf" style="display:inline">📄 bai12.pdf</a></td></tr><tr><td>Bài 13</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2013.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai13.pdf" style="display:inline">📄 bai13.pdf</a></td></tr><tr><td>Bài 14</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2014.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai14.pdf" style="display:inline">📄 bai14.pdf</a></td></tr><tr><td>Bài 15</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2015.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai15.pdf" style="display:inline">📄 bai15.pdf</a></td></tr><tr><td>Bài 16</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2016.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai16.pdf" style="display:inline">📄 bai16.pdf</a></td></tr><tr><td>Bài 17</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2017.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai17.pdf" style="display:inline">📄 bai17.pdf</a></td></tr><tr><td>Bài 18</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2018.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai18.pdf" style="display:inline">📄 bai18.pdf</a></td></tr><tr><td>Bài 19</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2019.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai19.pdf" style="display:inline">📄 bai19.pdf</a></td></tr><tr><td>Bài 20</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2020.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai20.pdf" style="display:inline">📄 bai20.pdf</a></td></tr><tr><td>Bài 21</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2021.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai21.pdf" style="display:inline">📄 bai21.pdf</a></td></tr><tr><td>Bài 22</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2022.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai22.pdf" style="display:inline">📄 bai22.pdf</a></td></tr><tr><td>Bài 23</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2023%20%28ph%E1%BA%A7n%201%29.mp4" style="display:inline">🎬 phần 1</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2023%20%28ph%E1%BA%A7n%202%29.mp4" style="display:inline">🎬 phần 2</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai23.pdf" style="display:inline">📄 bai23.pdf</a></td></tr><tr><td>Bài 24</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2024.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai24.pdf" style="display:inline">📄 bai24.pdf</a></td></tr><tr><td>Bài 25</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2025.mp4" style="display:inline">🎬 video</a></td></tr><tr><td>Bài 26</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2026.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai26.pdf" style="display:inline">📄 bai26.pdf</a></td></tr><tr><td>Bài 27</td><td><a href="file:///D:/tieng%20nga/tieng%20nga%20A1/H%E1%BB%8Dc%20ti%E1%BA%BFng%20Nga%20-%20Tr%C3%ACnh%20%C4%91%E1%BB%99%20A1%20-%20B%C3%A0i%2027.mp4" style="display:inline">🎬 video</a> · <a href="file:///D:/tieng%20nga/tieng%20nga%20A1/bai27.pdf" style="display:inline">📄 bai27.pdf</a></td></tr></table></div>
+</div>
+<p class="hint">Phím tắt thẻ: Space = lật, ← → = chuyển thẻ. Âm thanh phát từ file mp3 trong thư mục <code>am_thanh</code> nên không cần mạng; câu nào chưa có file thì dùng giọng tiếng Nga của trình duyệt.</p>
+</div>
+
+<script src="am_thanh/danh_sach.js"></script>
+<script src="am_thanh/buoi/danh_sach_buoi.js"></script>
+<script src="am_thanh/goi/chung.js"></script>
+<script src="du_lieu_buoi.js"></script>
+<script>
+const DATA = {"P": [{"n": 1, "t": "Chào hỏi", "ru": "Здравствуйте!", "lat": "Zdravstvuyte!", "doc": "ZDRA-xtvui-tê", "vi": "Xin chào (lịch sự)"}, {"n": 2, "t": "Chào hỏi", "ru": "Привет!", "lat": "Privet!", "doc": "pri-VIÊT", "vi": "Chào (thân mật)"}, {"n": 3, "t": "Chào hỏi", "ru": "Доброе утро!", "lat": "Dobroye utro!", "doc": "ĐÔ-bra-ie U-tra", "vi": "Chào buổi sáng"}, {"n": 4, "t": "Chào hỏi", "ru": "Добрый день!", "lat": "Dobryy den'!", "doc": "ĐÔ-brưi điên", "vi": "Chào buổi trưa / chiều"}, {"n": 5, "t": "Chào hỏi", "ru": "Добрый вечер!", "lat": "Dobryy vecher!", "doc": "ĐÔ-brưi VIÊ-chir", "vi": "Chào buổi tối"}, {"n": 6, "t": "Chào hỏi", "ru": "Как дела?", "lat": "Kak dela?", "doc": "cac đi-LA", "vi": "Bạn khỏe không? (thân mật)"}, {"n": 7, "t": "Chào hỏi", "ru": "Как у вас дела?", "lat": "Kak u vas dela?", "doc": "cac u vax đi-LA", "vi": "Anh/chị dạo này thế nào? (lịch sự)"}, {"n": 8, "t": "Chào hỏi", "ru": "Хорошо, спасибо.", "lat": "Khorosho, spasibo.", "doc": "kha-ra-SÔ, spa-XI-ba", "vi": "Tốt, cảm ơn"}, {"n": 9, "t": "Chào hỏi", "ru": "Нормально.", "lat": "Normal'no.", "doc": "nar-MAL-na", "vi": "Bình thường"}, {"n": 10, "t": "Chào hỏi", "ru": "А у тебя?", "lat": "A u tebya?", "doc": "a u ti-BIA", "vi": "Còn bạn thì sao?"}, {"n": 11, "t": "Chào hỏi", "ru": "Спасибо!", "lat": "Spasibo!", "doc": "spa-XI-ba", "vi": "Cảm ơn!"}, {"n": 12, "t": "Chào hỏi", "ru": "Большое спасибо!", "lat": "Bol'shoye spasibo!", "doc": "bal-SÔ-ie spa-XI-ba", "vi": "Cảm ơn rất nhiều!"}, {"n": 13, "t": "Chào hỏi", "ru": "Пожалуйста.", "lat": "Pozhaluysta.", "doc": "pa-JA-lu-xta", "vi": "Không có gì / Xin mời / Làm ơn"}, {"n": 14, "t": "Chào hỏi", "ru": "Извините!", "lat": "Izvinite!", "doc": "iz-vi-NI-tê", "vi": "Xin lỗi! (lịch sự)"}, {"n": 15, "t": "Chào hỏi", "ru": "Ничего страшного.", "lat": "Nichego strashnogo.", "doc": "ni-chi-VÔ XTRASH-na-va", "vi": "Không sao đâu"}, {"n": 16, "t": "Chào hỏi", "ru": "До свидания!", "lat": "Do svidaniya!", "doc": "đa-xvi-ĐA-ni-a", "vi": "Tạm biệt!"}, {"n": 17, "t": "Chào hỏi", "ru": "Пока!", "lat": "Poka!", "doc": "pa-CA", "vi": "Tạm biệt! (thân mật)"}, {"n": 18, "t": "Chào hỏi", "ru": "До завтра!", "lat": "Do zavtra!", "doc": "đa ZAF-tra", "vi": "Hẹn gặp lại ngày mai!"}, {"n": 19, "t": "Chào hỏi", "ru": "Увидимся!", "lat": "Uvidimsya!", "doc": "u-VI-đim-xia", "vi": "Hẹn gặp lại nhé!"}, {"n": 20, "t": "Chào hỏi", "ru": "Удачи!", "lat": "Udachi!", "doc": "u-ĐA-chi", "vi": "Chúc may mắn!"}, {"n": 21, "t": "Giới thiệu bản thân", "ru": "Как вас зовут?", "lat": "Kak vas zovut?", "doc": "cac vax za-VUT", "vi": "Anh/chị tên là gì? (lịch sự)"}, {"n": 22, "t": "Giới thiệu bản thân", "ru": "Как тебя зовут?", "lat": "Kak tebya zovut?", "doc": "cac ti-BIA za-VUT", "vi": "Bạn tên là gì? (thân mật)"}, {"n": 23, "t": "Giới thiệu bản thân", "ru": "Меня зовут Тханг.", "lat": "Menya zovut Tkhang.", "doc": "mi-NIA za-VUT Thang", "vi": "Tôi tên là Thắng"}, {"n": 24, "t": "Giới thiệu bản thân", "ru": "Очень приятно!", "lat": "Ochen' priyatno!", "doc": "Ô-chin pri-IAT-na", "vi": "Rất vui được làm quen!"}, {"n": 25, "t": "Giới thiệu bản thân", "ru": "Мне тоже.", "lat": "Mne tozhe.", "doc": "mnê TÔ-jư", "vi": "Tôi cũng vậy"}, {"n": 26, "t": "Giới thiệu bản thân", "ru": "Откуда вы?", "lat": "Otkuda vy?", "doc": "at-CU-đa vư", "vi": "Anh/chị đến từ đâu?"}, {"n": 27, "t": "Giới thiệu bản thân", "ru": "Я из Вьетнама.", "lat": "Ya iz V'yetnama.", "doc": "ia iz viet-NA-ma", "vi": "Tôi đến từ Việt Nam"}, {"n": 28, "t": "Giới thiệu bản thân", "ru": "Я вьетнамец. / Я вьетнамка.", "lat": "Ya v'yetnamets. / Ya v'yetnamka.", "doc": "ia viet-NA-mits / ia viet-NAM-ca", "vi": "Tôi là người Việt (nam / nữ)"}, {"n": 29, "t": "Giới thiệu bản thân", "ru": "Где вы живёте?", "lat": "Gde vy zhivyote?", "doc": "gđê vư ji-VIÔ-tê", "vi": "Anh/chị sống ở đâu?"}, {"n": 30, "t": "Giới thiệu bản thân", "ru": "Я живу в Ханое.", "lat": "Ya zhivu v Khanoye.", "doc": "ia ji-VU f kha-NÔ-ie", "vi": "Tôi sống ở Hà Nội"}, {"n": 31, "t": "Giới thiệu bản thân", "ru": "Сколько вам лет?", "lat": "Skol'ko vam let?", "doc": "XCÔL-ca vam liêt", "vi": "Anh/chị bao nhiêu tuổi?"}, {"n": 32, "t": "Giới thiệu bản thân", "ru": "Мне двадцать пять лет.", "lat": "Mne dvadtsat' pyat' let.", "doc": "mnê ĐVA-xat piat liêt", "vi": "Tôi 25 tuổi"}, {"n": 33, "t": "Giới thiệu bản thân", "ru": "Кто вы по профессии?", "lat": "Kto vy po professii?", "doc": "ctô vư pa pra-FÊ-xi-i", "vi": "Anh/chị làm nghề gì?"}, {"n": 34, "t": "Giới thiệu bản thân", "ru": "Я студент. / Я студентка.", "lat": "Ya student. / Ya studentka.", "doc": "ia xtu-ĐIÊNT / ia xtu-ĐIÊNT-ca", "vi": "Tôi là sinh viên (nam / nữ)"}, {"n": 35, "t": "Giới thiệu bản thân", "ru": "Я работаю инженером.", "lat": "Ya rabotayu inzhenerom.", "doc": "ia ra-BÔ-ta-iu in-ji-NIÊ-ram", "vi": "Tôi làm kỹ sư"}, {"n": 36, "t": "Giới thiệu bản thân", "ru": "Вы говорите по-русски?", "lat": "Vy govorite po-russki?", "doc": "vư ga-va-RI-tê pa-RU-xki", "vi": "Anh/chị có nói tiếng Nga không?"}, {"n": 37, "t": "Giới thiệu bản thân", "ru": "Я немного говорю по-русски.", "lat": "Ya nemnogo govoryu po-russki.", "doc": "ia nim-NÔ-ga ga-va-RIU pa-RU-xki", "vi": "Tôi nói được một chút tiếng Nga"}, {"n": 38, "t": "Giới thiệu bản thân", "ru": "Я не понимаю.", "lat": "Ya ne ponimayu.", "doc": "ia ni pa-ni-MA-iu", "vi": "Tôi không hiểu"}, {"n": 39, "t": "Giới thiệu bản thân", "ru": "Говорите медленнее, пожалуйста.", "lat": "Govorite medlenneye, pozhaluysta.", "doc": "ga-va-RI-tê MIÊĐ-li-ni-ie, pa-JA-lu-xta", "vi": "Làm ơn nói chậm hơn"}, {"n": 40, "t": "Giới thiệu bản thân", "ru": "Повторите, пожалуйста.", "lat": "Povtorite, pozhaluysta.", "doc": "paf-ta-RI-tê, pa-JA-lu-xta", "vi": "Làm ơn nhắc lại"}, {"n": 41, "t": "Mua sắm", "ru": "Сколько это стоит?", "lat": "Skol'ko eto stoit?", "doc": "XCÔL-ca E-ta XTÔ-it", "vi": "Cái này giá bao nhiêu?"}, {"n": 42, "t": "Mua sắm", "ru": "Покажите, пожалуйста, это.", "lat": "Pokazhite, pozhaluysta, eto.", "doc": "pa-ca-JƯ-tê, pa-JA-lu-xta, E-ta", "vi": "Cho tôi xem cái này"}, {"n": 43, "t": "Mua sắm", "ru": "У вас есть...?", "lat": "U vas yest'...?", "doc": "u vax iêxt", "vi": "Ở đây có... không?"}, {"n": 44, "t": "Mua sắm", "ru": "Я хочу купить...", "lat": "Ya khochu kupit'...", "doc": "ia kha-CHU cu-PIT", "vi": "Tôi muốn mua..."}, {"n": 45, "t": "Mua sắm", "ru": "Я просто смотрю.", "lat": "Ya prosto smotryu.", "doc": "ia PRÔ-xta xma-TRIU", "vi": "Tôi chỉ xem thôi"}, {"n": 46, "t": "Mua sắm", "ru": "Это слишком дорого.", "lat": "Eto slishkom dorogo.", "doc": "E-ta XLISH-cam ĐÔ-ra-ga", "vi": "Đắt quá"}, {"n": 47, "t": "Mua sắm", "ru": "Есть подешевле?", "lat": "Yest' podeshevle?", "doc": "iêxt pa-đi-SHEV-lê", "vi": "Có cái nào rẻ hơn không?"}, {"n": 48, "t": "Mua sắm", "ru": "Можно скидку?", "lat": "Mozhno skidku?", "doc": "MÔJ-na XKIT-cu", "vi": "Giảm giá được không?"}, {"n": 49, "t": "Mua sắm", "ru": "Можно примерить?", "lat": "Mozhno primerit'?", "doc": "MÔJ-na pri-MIÊ-rit", "vi": "Tôi mặc thử được không?"}, {"n": 50, "t": "Mua sắm", "ru": "Какой это размер?", "lat": "Kakoy eto razmer?", "doc": "ca-CÔI E-ta raz-MIÊR", "vi": "Cái này cỡ mấy?"}, {"n": 51, "t": "Mua sắm", "ru": "Есть другой цвет?", "lat": "Yest' drugoy tsvet?", "doc": "iêxt đru-GÔI xviêt", "vi": "Có màu khác không?"}, {"n": 52, "t": "Mua sắm", "ru": "Я возьму это.", "lat": "Ya voz'mu eto.", "doc": "ia vaz-MU E-ta", "vi": "Tôi lấy cái này"}, {"n": 53, "t": "Mua sắm", "ru": "Где касса?", "lat": "Gde kassa?", "doc": "gđê CA-xa", "vi": "Quầy thanh toán ở đâu?"}, {"n": 54, "t": "Mua sắm", "ru": "Можно оплатить картой?", "lat": "Mozhno oplatit' kartoy?", "doc": "MÔJ-na a-pla-TIT CAR-tai", "vi": "Trả bằng thẻ được không?"}, {"n": 55, "t": "Mua sắm", "ru": "Только наличные.", "lat": "Tol'ko nalichnyye.", "doc": "TÔL-ca NA-lich-nư-ie", "vi": "Chỉ nhận tiền mặt"}, {"n": 56, "t": "Mua sắm", "ru": "Дайте, пожалуйста, пакет.", "lat": "Dayte, pozhaluysta, paket.", "doc": "ĐAI-tê, pa-JA-lu-xta, pa-KIÊT", "vi": "Cho tôi xin một cái túi"}, {"n": 57, "t": "Mua sắm", "ru": "Вам нужен чек?", "lat": "Vam nuzhen chek?", "doc": "vam NU-jưn chec", "vi": "Anh/chị có cần hóa đơn không?"}, {"n": 58, "t": "Mua sắm", "ru": "Чек, пожалуйста.", "lat": "Chek, pozhaluysta.", "doc": "chec, pa-JA-lu-xta", "vi": "Cho tôi xin hóa đơn"}, {"n": 59, "t": "Mua sắm", "ru": "Сдачи не надо.", "lat": "Sdachi ne nado.", "doc": "ZĐA-chi ni NA-đa", "vi": "Không cần trả lại tiền thừa"}, {"n": 60, "t": "Mua sắm", "ru": "Во сколько открывается магазин?", "lat": "Vo skol'ko otkryvayetsya magazin?", "doc": "va XCÔL-ca at-crư-VA-iet-xa ma-ga-ZIN", "vi": "Cửa hàng mấy giờ mở cửa?"}, {"n": 61, "t": "Ăn uống", "ru": "Столик на двоих, пожалуйста.", "lat": "Stolik na dvoikh, pozhaluysta.", "doc": "XTÔ-lic na đva-IKH, pa-JA-lu-xta", "vi": "Cho tôi bàn hai người"}, {"n": 62, "t": "Ăn uống", "ru": "Меню, пожалуйста.", "lat": "Menyu, pozhaluysta.", "doc": "mi-NIU, pa-JA-lu-xta", "vi": "Cho tôi xem thực đơn"}, {"n": 63, "t": "Ăn uống", "ru": "Что вы посоветуете?", "lat": "Chto vy posovetuyete?", "doc": "shtô vư pa-xa-VIÊ-tu-ie-tê", "vi": "Anh/chị gợi ý món gì?"}, {"n": 64, "t": "Ăn uống", "ru": "Я буду это.", "lat": "Ya budu eto.", "doc": "ia BU-đu E-ta", "vi": "Tôi gọi món này"}, {"n": 65, "t": "Ăn uống", "ru": "Мне, пожалуйста, суп.", "lat": "Mne, pozhaluysta, sup.", "doc": "mnê, pa-JA-lu-xta, xup", "vi": "Cho tôi món súp"}, {"n": 66, "t": "Ăn uống", "ru": "Я хочу пить.", "lat": "Ya khochu pit'.", "doc": "ia kha-CHU pit", "vi": "Tôi khát nước"}, {"n": 67, "t": "Ăn uống", "ru": "Я голоден. / Я голодна.", "lat": "Ya goloden. / Ya golodna.", "doc": "ia GÔ-la-đin / ia ga-lad-NA", "vi": "Tôi đói (nam / nữ)"}, {"n": 68, "t": "Ăn uống", "ru": "Воду без газа, пожалуйста.", "lat": "Vodu bez gaza, pozhaluysta.", "doc": "VÔ-đu biz GA-za, pa-JA-lu-xta", "vi": "Cho tôi nước không ga"}, {"n": 69, "t": "Ăn uống", "ru": "Чашку кофе, пожалуйста.", "lat": "Chashku kofe, pozhaluysta.", "doc": "CHASH-cu CÔ-fê, pa-JA-lu-xta", "vi": "Cho tôi một tách cà phê"}, {"n": 70, "t": "Ăn uống", "ru": "Чай с сахаром / без сахара.", "lat": "Chay s sakharom / bez sakhara.", "doc": "chai x-XA-kha-ram / biz XA-kha-ra", "vi": "Trà có đường / không đường"}, {"n": 71, "t": "Ăn uống", "ru": "Я не ем мясо.", "lat": "Ya ne yem myaso.", "doc": "ia ni iêm MIA-xa", "vi": "Tôi không ăn thịt"}, {"n": 72, "t": "Ăn uống", "ru": "Это острое?", "lat": "Eto ostroye?", "doc": "E-ta ÔX-tra-ie", "vi": "Món này có cay không?"}, {"n": 73, "t": "Ăn uống", "ru": "Очень вкусно!", "lat": "Ochen' vkusno!", "doc": "Ô-chin FCUX-na", "vi": "Rất ngon!"}, {"n": 74, "t": "Ăn uống", "ru": "Приятного аппетита!", "lat": "Priyatnogo appetita!", "doc": "pri-IAT-na-va a-pi-TI-ta", "vi": "Chúc ngon miệng!"}, {"n": 75, "t": "Ăn uống", "ru": "Ещё один, пожалуйста.", "lat": "Yeshchyo odin, pozhaluysta.", "doc": "i-SHÔ a-ĐIN, pa-JA-lu-xta", "vi": "Cho thêm một phần nữa"}, {"n": 76, "t": "Ăn uống", "ru": "Счёт, пожалуйста.", "lat": "Schyot, pozhaluysta.", "doc": "shôt, pa-JA-lu-xta", "vi": "Làm ơn tính tiền"}, {"n": 77, "t": "Ăn uống", "ru": "Можно заплатить отдельно?", "lat": "Mozhno zaplatit' otdel'no?", "doc": "MÔJ-na za-pla-TIT a-ĐIÊL-na", "vi": "Trả tiền riêng được không?"}, {"n": 78, "t": "Ăn uống", "ru": "Где туалет?", "lat": "Gde tualet?", "doc": "gđê tu-a-LIÊT", "vi": "Nhà vệ sinh ở đâu?"}, {"n": 79, "t": "Ăn uống", "ru": "За ваше здоровье!", "lat": "Za vashe zdorov'ye!", "doc": "za VA-shư zđa-RÔV-ie", "vi": "Chúc sức khỏe! (khi nâng ly)"}, {"n": 80, "t": "Ăn uống", "ru": "Всё было очень вкусно, спасибо.", "lat": "Vsyo bylo ochen' vkusno, spasibo.", "doc": "fxiô BƯ-la Ô-chin FCUX-na, spa-XI-ba", "vi": "Mọi thứ rất ngon, cảm ơn"}, {"n": 81, "t": "Hỏi đường", "ru": "Извините, где метро?", "lat": "Izvinite, gde metro?", "doc": "iz-vi-NI-tê, gđê mi-TRÔ", "vi": "Xin lỗi, ga tàu điện ngầm ở đâu?"}, {"n": 82, "t": "Hỏi đường", "ru": "Как пройти к вокзалу?", "lat": "Kak proyti k vokzalu?", "doc": "cac prai-TI c vag-ZA-lu", "vi": "Đi đến ga tàu hỏa thế nào?"}, {"n": 83, "t": "Hỏi đường", "ru": "Где находится гостиница?", "lat": "Gde nakhoditsya gostinitsa?", "doc": "gđê na-KHÔ-đit-xa gax-TI-ni-xa", "vi": "Khách sạn nằm ở đâu?"}, {"n": 84, "t": "Hỏi đường", "ru": "Это далеко?", "lat": "Eto daleko?", "doc": "E-ta đa-li-CÔ", "vi": "Có xa không?"}, {"n": 85, "t": "Hỏi đường", "ru": "Это близко.", "lat": "Eto blizko.", "doc": "E-ta BLIX-ca", "vi": "Gần thôi"}, {"n": 86, "t": "Hỏi đường", "ru": "Идите прямо.", "lat": "Idite pryamo.", "doc": "i-ĐI-tê PRIA-ma", "vi": "Đi thẳng"}, {"n": 87, "t": "Hỏi đường", "ru": "Поверните направо.", "lat": "Povernite napravo.", "doc": "pa-vir-NI-tê na-PRA-va", "vi": "Rẽ phải"}, {"n": 88, "t": "Hỏi đường", "ru": "Поверните налево.", "lat": "Povernite nalevo.", "doc": "pa-vir-NI-tê na-LIÊ-va", "vi": "Rẽ trái"}, {"n": 89, "t": "Hỏi đường", "ru": "Здесь. / Там.", "lat": "Zdes'. / Tam.", "doc": "zđiêx / tam", "vi": "Ở đây / Ở đằng kia"}, {"n": 90, "t": "Hỏi đường", "ru": "Покажите на карте, пожалуйста.", "lat": "Pokazhite na karte, pozhaluysta.", "doc": "pa-ca-JƯ-tê na CAR-tê, pa-JA-lu-xta", "vi": "Làm ơn chỉ giúp trên bản đồ"}, {"n": 91, "t": "Hỏi đường", "ru": "Я заблудился. / Я заблудилась.", "lat": "Ya zabludilsya. / Ya zabludilas'.", "doc": "ia za-blu-ĐIL-xa / ia za-blu-ĐI-lax", "vi": "Tôi bị lạc đường (nam / nữ)"}, {"n": 92, "t": "Hỏi đường", "ru": "Сколько идти пешком?", "lat": "Skol'ko idti peshkom?", "doc": "XCÔL-ca it-TI pish-CÔM", "vi": "Đi bộ mất bao lâu?"}, {"n": 93, "t": "Hỏi đường", "ru": "Какой автобус идёт в центр?", "lat": "Kakoy avtobus idyot v tsentr?", "doc": "ca-CÔI af-TÔ-bux i-ĐIÔT f-xentr", "vi": "Xe buýt nào đi vào trung tâm?"}, {"n": 94, "t": "Hỏi đường", "ru": "Где остановка автобуса?", "lat": "Gde ostanovka avtobusa?", "doc": "gđê a-xta-NÔF-ca af-TÔ-bu-xa", "vi": "Trạm xe buýt ở đâu?"}, {"n": 95, "t": "Hỏi đường", "ru": "Мне нужно на эту улицу.", "lat": "Mne nuzhno na etu ulitsu.", "doc": "mnê NUJ-na na E-tu U-li-xu", "vi": "Tôi cần đến con phố này"}, {"n": 96, "t": "Hỏi đường", "ru": "Вызовите такси, пожалуйста.", "lat": "Vyzovite taksi, pozhaluysta.", "doc": "VƯ-za-vi-tê tac-XI, pa-JA-lu-xta", "vi": "Làm ơn gọi giúp tôi taxi"}, {"n": 97, "t": "Hỏi đường", "ru": "Отвезите меня по этому адресу.", "lat": "Otvezite menya po etomu adresu.", "doc": "at-vi-ZI-tê mi-NIA pa E-ta-mu A-đri-xu", "vi": "Đưa tôi đến địa chỉ này"}, {"n": 98, "t": "Hỏi đường", "ru": "Остановите здесь, пожалуйста.", "lat": "Ostanovite zdes', pozhaluysta.", "doc": "a-xta-na-VI-tê zđiêx, pa-JA-lu-xta", "vi": "Làm ơn dừng ở đây"}, {"n": 99, "t": "Hỏi đường", "ru": "Где ближайшая аптека?", "lat": "Gde blizhayshaya apteka?", "doc": "gđê bli-JAI-sha-ia ap-TIÊ-ca", "vi": "Hiệu thuốc gần nhất ở đâu?"}, {"n": 100, "t": "Hỏi đường", "ru": "Помогите, пожалуйста!", "lat": "Pomogite, pozhaluysta!", "doc": "pa-ma-GI-tê, pa-JA-lu-xta", "vi": "Làm ơn giúp tôi!"}], "A": [{"l": "А а", "name": "а", "sound": "a như tiếng Việt", "ex": "ма́ма", "ph": "[MA-ma]", "vi": "mẹ"}, {"l": "Б б", "name": "бэ", "sound": "b, môi mím rồi bật nhẹ", "ex": "брат", "ph": "[brat]", "vi": "anh/em trai"}, {"l": "В в", "name": "вэ", "sound": "v như tiếng Việt", "ex": "вода́", "ph": "[va-ĐA]", "vi": "nước"}, {"l": "Г г", "name": "гэ", "sound": "g \"đóng\" như \"g\" trong tiếng Anh *go*. KHÔNG phải \"g/gh\" xát của tiếng Việt", "ex": "газе́та", "ph": "[ga-ZIE-ta]", "vi": "tờ báo"}, {"l": "Д д", "name": "дэ", "sound": "đ như tiếng Việt (KHÔNG phải \"d\" = z của tiếng Việt)", "ex": "дом", "ph": "[đom]", "vi": "ngôi nhà"}, {"l": "Е е", "name": "е", "sound": "ie ở đầu từ / sau nguyên âm; sau phụ âm thì làm mềm phụ âm + e", "ex": "есть / нет", "ph": "[iest'] / [n'et]", "vi": "ăn, có / không"}, {"l": "Ё ё", "name": "ё", "sound": "iô; chữ Ё luôn mang trọng âm", "ex": "ёлка", "ph": "[IÔL-ka]", "vi": "cây thông"}, {"l": "Ж ж", "name": "жэ", "sound": "zh: như \"r\" giọng miền Nam hoặc \"gi\" uốn lưỡi, có rung dây thanh. Luôn cứng", "ex": "жена́", "ph": "[zhư-NA]", "vi": "vợ"}, {"l": "З з", "name": "зэ", "sound": "z: như \"d/gi\" giọng Hà Nội", "ex": "зо́нтик", "ph": "[ZON-t'ik]", "vi": "cái ô (dù)"}, {"l": "И и", "name": "и", "sound": "i như tiếng Việt; làm mềm phụ âm đứng trước", "ex": "и́ли", "ph": "[I-l'i]", "vi": "hoặc"}, {"l": "Й й", "name": "и кра́ткое (\"i ngắn\")", "sound": "i ngắn như \"i\" cuối trong \"ai, ôi\"; không tạo âm tiết riêng", "ex": "мой", "ph": "[moi]", "vi": "của tôi"}, {"l": "К к", "name": "ка", "sound": "k/c, không bật hơi", "ex": "ко́шка", "ph": "[KOSH-ka]", "vi": "con mèo"}, {"l": "Л л", "name": "эль", "sound": "l \"đặc\": đầu lưỡi chạm chân răng trên, cuống lưỡi nâng cao (gần \"l\" cuối tiếng Anh *ball*). Khi mềm (ль, ли, ля...) thì gần \"l\" tiếng Việt", "ex": "ла́мпа", "ph": "[LAM-pa]", "vi": "cái đèn"}, {"l": "М м", "name": "эм", "sound": "m", "ex": "мир", "ph": "[m'ir]", "vi": "hòa bình, thế giới"}, {"l": "Н н", "name": "эн", "sound": "n; khi mềm gần nh", "ex": "нос", "ph": "[nos]", "vi": "cái mũi"}, {"l": "О о", "name": "о", "sound": "o khi có trọng âm (tròn môi, giữa \"o\" và \"ô\"); KHÔNG trọng âm thì đọc a hoặc ơ (xem mục 4)", "ex": "окно́", "ph": "[ak-NO]", "vi": "cửa sổ"}, {"l": "П п", "name": "пэ", "sound": "p ở đầu từ (tiếng Việt gần như không có). Đừng đọc thành \"b\"", "ex": "па́па", "ph": "[PA-pa]", "vi": "bố"}, {"l": "Р р", "name": "эр", "sound": "r rung đầu lưỡi (lưỡi rung 2 đến 3 lần)", "ex": "рука́", "ph": "[ru-KA]", "vi": "bàn tay"}, {"l": "С с", "name": "эс", "sound": "x như tiếng Việt", "ex": "сок", "ph": "[xok]", "vi": "nước ép"}, {"l": "Т т", "name": "тэ", "sound": "t như tiếng Việt, không bật hơi (đừng đọc thành \"th\")", "ex": "там", "ph": "[tam]", "vi": "ở đó"}, {"l": "У у", "name": "у", "sound": "u, môi chu tròn và đưa ra trước", "ex": "у́тро", "ph": "[U-trơ]", "vi": "buổi sáng"}, {"l": "Ф ф", "name": "эф", "sound": "ph", "ex": "фо́то", "ph": "[PHO-tơ]", "vi": "bức ảnh"}, {"l": "Х х", "name": "ха", "sound": "kh", "ex": "хлеб", "ph": "[khl'ep]", "vi": "bánh mì"}, {"l": "Ц ц", "name": "цэ", "sound": "ts: đặt lưỡi như \"t\" rồi xì ra \"x\" liền một hơi. Luôn cứng", "ex": "центр", "ph": "[tsentr]", "vi": "trung tâm"}, {"l": "Ч ч", "name": "че", "sound": "ch mềm có hơi xì, như \"ch\" tiếng Anh *chair* (khác \"ch\" tiếng Việt). Luôn mềm", "ex": "чай", "ph": "[chai]", "vi": "trà"}, {"l": "Ш ш", "name": "ша", "sound": "sh: \"s\" uốn lưỡi, lưỡi lùi ra sau, môi hơi tròn, âm trầm. Luôn cứng", "ex": "шко́ла", "ph": "[SHKO-la]", "vi": "trường học"}, {"l": "Щ щ", "name": "ща", "sound": "sh' kéo dài: lưỡi phẳng ép sát lợi trên, âm cao và mềm, dài gấp đôi Ш. Luôn mềm. KHÔNG đọc \"sh-ch\"", "ex": "щи / борщ", "ph": "[sh'i] / [borsh']", "vi": "canh bắp cải / súp củ dền"}, {"l": "Ъ ъ", "name": "твёрдый знак (dấu cứng)", "sound": "Không có âm. Tách phụ âm trước với nguyên âm sau, đọc ngắt nhẹ", "ex": "подъе́зд", "ph": "[pad-IEST]", "vi": "sảnh/lối vào chung cư"}, {"l": "Ы ы", "name": "ы", "sound": "gần \"ư\" tiếng Việt, môi dẹt, lưỡi hơi lùi sau. Giữ một âm, KHÔNG trượt thành \"ui\". Không bao giờ đứng đầu từ", "ex": "ры́ба / сыр", "ph": "[RƯ-ba] / [xưr]", "vi": "con cá / phô mai"}, {"l": "Ь ь", "name": "мя́гкий знак (dấu mềm)", "sound": "Không có âm. Làm mềm phụ âm đứng trước", "ex": "мать / день", "ph": "[mat'] / [đ'en']", "vi": "mẹ / ngày"}, {"l": "Э э", "name": "э", "sound": "e như tiếng Việt; KHÔNG làm mềm phụ âm", "ex": "э́то", "ph": "[E-tơ]", "vi": "đây là, cái này"}, {"l": "Ю ю", "name": "ю", "sound": "iu ở đầu từ; sau phụ âm thì làm mềm + u", "ex": "юг", "ph": "[iuk]", "vi": "phía nam"}, {"l": "Я я", "name": "я", "sound": "ia ở đầu từ; sau phụ âm thì làm mềm + a", "ex": "я", "ph": "[ia]", "vi": "tôi"}]};
+const P = DATA.P, A = DATA.A;
+const PIC = [..."👋🙌🌅☀🌙😊🤝👍😐🙂🙏💐🤲🙇😌👋✌📅🔜🍀❓🧑📛😄🤗🌍🏠👫🏠🌆🎂🎈💼🎓👷🗣🤏🤔🐢🔁💰👀🛍🛒🕶💸🏷✂👕📏🎨✅🧾💳💵🛍🧾🧾🪙🕘🍽📖🍳👉🍲💧😋🚰☕🍵🥗🌶😍🍴➕💵👫🚻🥂🥰🚇🚉🏨🗺📍⬆➡⬅👇🗺😵🚶🚌🚏🛣🚕📮🛑💊🆘"];
+const picOf = p => PIC[p.n - 1] || "🇷🇺";
+const $ = id => document.getElementById(id);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const md = s => esc(s).replace(/\*(.+?)\*/g, "<i>$1</i>");
+
+const AU = window.AM_THANH || {}, GOI = window.GOI_AM = window.GOI_AM || {}, packs = {};
+// session sounds live in am_thanh/goi/buoi_NNN.js (female+male embedded), loaded when a session is opened
+const loadPack = name => packs[name] = packs[name] || new Promise(res => {
+  const s = document.createElement("script"); s.src = "am_thanh/goi/" + name + ".js"; s.onload = s.onerror = () => res(); document.head.appendChild(s);
+});
+let player = new Audio(), vTurn = 0;
+// pick male (am_thanh/nam/) or female file; a missing male file falls back to the female one
+function playFile(f, onFail, onEnd) {
+  const m = $("voice").value, male = m === "nam" || (m === "mix" && vTurn++ % 2 === 1);
+  const go = src => { player.pause(); player = new Audio(src); if (onEnd) player.onended = () => onEnd(player.duration || 1); return player.play(); };
+  // AbortError = this sound was cut off by the next one, not a missing file
+  const fail = next => e => e && e.name === "AbortError" ? 0 : next();
+  const g = GOI[f], nu = g ? g[0] : "am_thanh/" + f, nam = g ? g[1] : "am_thanh/nam/" + f;
+  go(male ? nam : nu).catch(fail(() => male ? go(nu).catch(fail(onFail)) : onFail()));
+}
+function say(text) {
+  const f = AU[text.replace(/\u0301/g, "").replace(/\s+/g, " ").trim()];
+  if (f) {
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    playFile(f, () => tts(text)); return;
+  }
+  tts(text);
+}
+function tts(text) {
+  if (!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text.replace(/́/g, ""));
+  u.lang = "ru-RU"; u.rate = 0.8;
+  const v = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith("ru"));
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
+  if (!v && !say.warned && (say.warned = 1)) alert("Máy chưa có giọng đọc tiếng Nga cho câu này. Hãy mở bằng Microsoft Edge hoặc Google Chrome, hoặc cài giọng Nga: Windows Settings → Time & Language → Speech → Add voices → Русский.");
+}
+
+// ---- motivation: streak, progress, celebration
+function markStudy() {
+  const today = new Date().toDateString(), s = store.get("streak", { day: "", n: 0 });
+  if (s.day !== today) { s.n = s.day === new Date(Date.now() - 864e5).toDateString() ? s.n + 1 : 1; s.day = today; store.set("streak", s); }
+  showStats();
+}
+function showStats() {
+  const s = store.get("streak", { n: 0 });
+  $("sStreak").textContent = `🔥 ${s.n} ngày liên tiếp`;
+  $("sBar").style.width = (known.size / P.length * 100) + "%";
+  $("sKnown").textContent = `⭐ Thuộc ${known.size}/${P.length}`;
+}
+function celebrate(el) {
+  const r = el.getBoundingClientRect();
+  [..."🎉⭐✨🌟💫"].forEach((e, i) => {
+    const b = document.createElement("span"); b.className = "burst"; b.textContent = e;
+    b.style.left = (r.left + r.width / 2) + "px"; b.style.top = r.top + "px";
+    b.style.setProperty("--dx", (i - 2) * 50 + "px"); b.style.setProperty("--dy", -60 - Math.random() * 60 + "px"); b.style.setProperty("--r", (i - 2) * 30 + "deg");
+    document.body.appendChild(b); setTimeout(() => b.remove(), 1000);
+  });
+}
+const tcls = p => "card t" + Math.max(0, topics.indexOf(p.t) - 1);
+
+// ---- tabs
+let mode = store.get("mode", "lesson");
+function setMode(m) {
+  mode = m; store.set("mode", m);
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.m === m));
+  ["lesson", "alpha", "flash", "quiz", "speak", "fill", "order", "spell", "listen", "mem", "res", "game"].forEach(id => $(id).classList.toggle("hide", id !== m));
+  // load the game only when its tab opens, then give it keyboard focus
+  if (m === "game") { const f = $("gameFrame"); if (!f.src) f.src = "tro_choi_quai_vat.html"; f.focus(); }
+}
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => setMode(b.dataset.m));
+
+// ---- alphabet
+$("aTableBox").innerHTML = "<table><tr><th>Chữ</th><th>Đọc gần giống</th><th>Ví dụ</th></tr>" +
+  A.map((a, i) => `<tr><td class="l">${esc(a.l)}</td><td>${md(a.sound)}<div class="mute">tên: ${esc(a.name)}</div></td>` +
+    `<td><a href="#" data-say="${i}">${esc(a.ex)}</a> ${esc(a.ph)}<div class="mute">${esc(a.vi)}</div></td></tr>`).join("") + "</table>";
+$("aTableBox").onclick = e => { const t = e.target.closest("[data-say]"); if (t) { e.preventDefault(); say(A[t.dataset.say].ex); } };
+let aq = null;
+function aSub(which) {
+  $("aTable").classList.toggle("on", which === "t"); $("aQuiz").classList.toggle("on", which === "q");
+  $("aTableBox").classList.toggle("hide", which !== "t"); $("aQuizBox").classList.toggle("hide", which !== "q");
+  if (which === "q") { aq = { list: shuffle(A), i: 0, score: 0 }; aAsk(); }
+}
+$("aTable").onclick = () => aSub("t"); $("aQuiz").onclick = () => aSub("q");
+function aAsk() {
+  const box = $("aQuizBox");
+  if (aq.i >= aq.list.length) {
+    box.innerHTML = `<div class="card"><div class="big">${aq.score}/${aq.list.length}</div><div>Xong cả 33 chữ!</div><button id="aAgain">Làm lại</button></div>`;
+    $("aAgain").onclick = () => aSub("q"); return;
+  }
+  const a = aq.list[aq.i];
+  const opts = shuffle([a, ...shuffle(A.filter(x => x !== a)).slice(0, 3)]);
+  box.innerHTML = `<div class="bar"><span>Chữ ${aq.i + 1}/${aq.list.length}</span><span>Đúng: ${aq.score}</span></div>` +
+    `<div class="card"><div class="big">${esc(a.l)}</div><div class="mute">Chữ này đọc thế nào?</div><div class="opts"></div></div>`;
+  const o = box.querySelector(".opts");
+  opts.forEach(x => {
+    const b = document.createElement("button"); b.innerHTML = md(x.sound);
+    b.onclick = () => {
+      o.querySelectorAll("button").forEach(bb => bb.disabled = true);
+      markStudy(); if (x === a) { b.classList.add("ok"); aq.score++; celebrate(b); } else { b.classList.add("bad"); [...o.children][opts.indexOf(a)].classList.add("ok"); }
+      say(a.ex);
+      setTimeout(() => { aq.i++; aAsk(); }, x === a ? 900 : 2200);
+    };
+    o.appendChild(b);
+  });
+}
+
+// ---- topics
+const topics = ["Tất cả", ...new Set(P.map(p => p.t))];
+["fTopic", "qTopic", "sTopic"].forEach(id => $(id).innerHTML = topics.map(t => `<option>${esc(t)}</option>`).join(""));
+
+// ---- flashcards
+let known = new Set(store.get("known", []));
+let fList = [], fi = 0, flipped = false;
+function fBuild() {
+  const t = $("fTopic").value, hk = $("fHideKnown").checked;
+  fList = P.filter(p => (t === "Tất cả" || p.t === t) && !(hk && known.has(p.n)));
+  fi = 0; fShow();
+}
+function fShow() {
+  flipped = false;
+  $("fKnownCount").textContent = `Đã thuộc: ${known.size}/${P.length}`;
+  if (!fList.length) { $("fCard").innerHTML = `<div class="mid">🎉 Hết thẻ ở mục này.</div>`; $("fPos").textContent = ""; return; }
+  const p = fList[fi];
+  $("fPos").textContent = `Thẻ ${fi + 1}/${fList.length} · ${p.t}`;
+  $("fKnow").textContent = known.has(p.n) ? "↺ Bỏ đã thuộc" : "✓ Đã thuộc";
+  $("fCard").className = tcls(p);
+  $("fCard").innerHTML = `<div class="pic">${picOf(p)}</div><div class="big">${esc(p.ru)}</div><div class="mute">${esc(p.lat)}</div>` +
+    `<div class="mid" style="color:var(--acc)">${esc(p.doc)}</div><div id="fBack" class="mid hide">${esc(p.vi)}</div>` +
+    `<div class="hint" id="fTip">Đoán nghĩa rồi bấm lật thẻ</div>`;
+}
+function fFlip() { if (!fList.length) return; markStudy(); flipped = !flipped; $("fBack").classList.toggle("hide", !flipped); $("fTip").classList.toggle("hide", flipped); }
+function fMove(d) { if (!fList.length) return; fi = (fi + d + fList.length) % fList.length; fShow(); }
+$("fTopic").onchange = fBuild; $("fHideKnown").onchange = fBuild;
+$("fFlip").onclick = fFlip; $("fPrev").onclick = () => fMove(-1); $("fNext").onclick = () => fMove(1);
+$("fSay").onclick = () => fList.length && say(fList[fi].ru);
+$("fKnow").onclick = () => {
+  if (!fList.length) return; const n = fList[fi].n;
+  known.has(n) ? known.delete(n) : (known.add(n), celebrate($("fKnow"))); store.set("known", [...known]); showStats();
+  if ($("fHideKnown").checked && known.has(n)) { fList.splice(fi, 1); if (fi >= fList.length) fi = 0; }
+  fShow();
+};
+document.addEventListener("keydown", e => {
+  if (mode !== "flash" || e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+  if (e.key === " ") { e.preventDefault(); fFlip(); } else if (e.key === "ArrowRight") fMove(1); else if (e.key === "ArrowLeft") fMove(-1);
+});
+
+// ---- quiz
+let qs = null;
+$("qStart").onclick = () => {
+  const t = $("qTopic").value;
+  const pool = P.filter(p => t === "Tất cả" || p.t === t);
+  qs = { list: shuffle(pool).slice(0, 10), i: 0, score: 0, dir: $("qDir").value, wrong: [] };
+  qAsk();
+};
+function qAsk() {
+  $("qScore").textContent = `Đúng: ${qs.score}`;
+  if (qs.i >= qs.list.length) {
+    $("qPos").textContent = ""; $("qCard").className = "card";
+    if (qs.score === qs.list.length) celebrate($("qCard"));
+    $("qCard").innerHTML = `<div class="big">${qs.score}/${qs.list.length}</div>` +
+      (qs.wrong.length ? `<div class="mute">Cần ôn lại:</div>` + qs.wrong.map(p => `<div>${esc(p.ru)} = ${esc(p.vi)}</div>`).join("") : `<div>Hoàn hảo! 🎉</div>`) +
+      `<button onclick="document.getElementById('qStart').click()">Làm 10 câu khác</button>`;
+    return;
+  }
+  const p = qs.list[qs.i], ru = qs.dir === "ru";
+  $("qPos").textContent = `Câu ${qs.i + 1}/${qs.list.length}`;
+  const others = shuffle(P.filter(x => x !== p && x.vi !== p.vi));
+  const same = others.filter(x => x.t === p.t), rest = others.filter(x => x.t !== p.t);
+  const opts = shuffle([p, ...[...same, ...rest].slice(0, 3)]);
+  $("qCard").className = tcls(p);
+  $("qCard").innerHTML = ru
+    ? `<div class="pic">${picOf(p)}</div><div class="big">${esc(p.ru)}</div><div class="mute">${esc(p.doc)}</div><div class="opts"></div>`
+    : `<div class="pic">${picOf(p)}</div><div class="mid">${esc(p.vi)}</div><div class="mute">Câu tiếng Nga nào đúng?</div><div class="opts"></div>`;
+  if (ru) say(p.ru);
+  const o = $("qCard").querySelector(".opts");
+  opts.forEach(x => {
+    const b = document.createElement("button");
+    b.textContent = ru ? x.vi : x.ru;
+    b.onclick = () => {
+      o.querySelectorAll("button").forEach(bb => bb.disabled = true);
+      markStudy(); if (x === p) { b.classList.add("ok"); qs.score++; celebrate(b); } else { b.classList.add("bad"); [...o.children][opts.indexOf(p)].classList.add("ok"); qs.wrong.push(p); }
+      if (!ru) say(p.ru);
+      setTimeout(() => { qs.i++; qAsk(); }, x === p ? 900 : 2200);
+    };
+    o.appendChild(b);
+  });
+}
+
+// ---- pronunciation check
+const norm = s => s.toLowerCase().replace(/\u0301/g, "").replace(/ё/g, "е").replace(/[^а-яa-z\s-]/g, " ").split(/\s+/).filter(Boolean);
+// score = share of target words the recognizer heard; phrases like "Я студент. / Я студентка." count the best alternative
+function grade(target, heard) {
+  let best = null;
+  target.split(" / ").forEach(alt => {
+    const tw = norm(alt.replace("...", "")), hw = new Set(heard.flatMap(norm));
+    const marks = tw.map(w => [w, hw.has(w)]), score = Math.round(marks.filter(m => m[1]).length / tw.length * 100);
+    if (!best || score > best.score) best = { marks, score };
+  });
+  return best;
+}
+console.assert(grade("Я студент. / Я студентка.", ["я студентка"]).score === 100 && grade("Как дела?", ["как"]).score === 50, "grade self-check");
+let sp = null;
+function sNew() {
+  const t = $("sTopic").value, pool = P.filter(p => t === "Tất cả" || p.t === t);
+  sp = pool[Math.floor(Math.random() * pool.length)];
+  $("sCard").className = tcls(sp);
+  $("sCard").innerHTML = `<div class="pic">${picOf(sp)}</div><div class="big">${esc(sp.ru)}</div><div class="mid" style="color:var(--acc)">${esc(sp.doc)}</div><div class="mute">${esc(sp.vi)}</div>`;
+  $("sResult").classList.add("hide");
+}
+$("sTopic").onchange = sNew; $("sNew").onclick = sNew; $("sListen").onclick = () => say(sp.ru);
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+$("sMic").onclick = () => {
+  const out = $("sResult"); out.classList.remove("hide");
+  if (!SR) { out.innerHTML = "Trình duyệt này chưa hỗ trợ nhận giọng nói. Hãy mở file bằng Chrome hoặc Edge."; return; }
+  const rec = new SR(); rec.lang = "ru-RU"; rec.maxAlternatives = 3; rec.interimResults = false;
+  $("sMic").disabled = true; $("sMic").textContent = "🔴 Đang nghe...";
+  out.innerHTML = "<div class='mute'>Đọc to câu trên nhé...</div>";
+  const done = () => { $("sMic").disabled = false; $("sMic").textContent = "🎤 Bấm rồi đọc to"; };
+  rec.onresult = e => {
+    markStudy();
+    const heard = [...e.results[0]].map(a => a.transcript), g = grade(sp.ru, heard);
+    const msg = g.score >= 90 ? "🏆 Tuyệt vời, chuẩn lắm!" : g.score >= 60 ? "👍 Khá tốt, luyện thêm chữ đỏ nhé" : "💪 Nghe mẫu rồi thử lại nhé";
+    out.innerHTML = `<div class="big">${g.score}%</div><div class="mid">${msg}</div><div>${g.marks.map(([w, ok]) => `<span class="w ${ok ? "ok" : "bad"}">${esc(w)}</span>`).join("")}</div><div class="mute">Máy nghe được: “${esc(heard[0])}”</div>`;
+    if (g.score >= 90) celebrate(out);
+  };
+  rec.onerror = e => { out.innerHTML = e.error === "not-allowed" ? "Bạn cần cho phép dùng micro (biểu tượng ổ khóa cạnh thanh địa chỉ)." : e.error === "network" ? "Cần có mạng Internet để chấm phát âm." : e.error === "no-speech" ? "Chưa nghe thấy gì, bấm lại và đọc to hơn nhé." : "Lỗi nhận giọng nói: " + esc(e.error); };
+  rec.onend = done;
+  try { rec.start(); } catch (err) { done(); }
+};
+
+// ---- shared helpers for the games
+const noStress = s => s.replace(/́/g, "");
+const clean = w => w.replace(/[.,!?…:;«»"()]/g, "");
+// one sentence per phrase: first alternative of "A / B", skip templates with "..."
+const SENT = P.filter(p => !p.ru.includes("...")).map(p => ({ p, ru: p.ru.split(" / ")[0] }));
+const WORDS = [...new Set(SENT.flatMap(s => s.ru.split(" ").map(clean)).filter(w => w.length >= 3))];
+const pickTopic = id => { const t = $(id).value; return SENT.filter(s => t === "Tất cả" || s.p.t === t); };
+function result(box, ok, total, again) {
+  box.innerHTML = `<div class="big">${ok}/${total}</div><div>${ok === total ? "Hoàn hảo! 🎉" : "Làm thêm lượt nữa nhé 💪"}</div><button>Chơi lại</button>`;
+  box.querySelector("button").onclick = again; if (ok === total) celebrate(box);
+}
+
+// ---- fill in the blank
+let fb = null;
+function fbStart() { fb = { list: shuffle(pickTopic("bTopic").filter(s => s.ru.split(" ").some(w => clean(w).length >= 3))).slice(0, 10), i: 0, ok: 0 }; fbAsk(); }
+function fbAsk() {
+  const box = $("bCard"); $("bScore").textContent = `Đúng: ${fb.ok}`;
+  if (fb.i >= fb.list.length) { $("bPos").textContent = ""; return result(box, fb.ok, fb.list.length, fbStart); }
+  const s = fb.list[fb.i], words = s.ru.split(" ");
+  const idxs = words.map((w, i) => i).filter(i => clean(words[i]).length >= 3), k = idxs[Math.floor(Math.random() * idxs.length)];
+  const ans = clean(words[k]);
+  const shown = words.map((w, i) => i === k ? w.replace(ans, "<u>&nbsp;?&nbsp;&nbsp;&nbsp;</u>") : esc(w)).join(" ");
+  const opts = shuffle([ans, ...shuffle(WORDS.filter(w => w.toLowerCase() !== ans.toLowerCase())).slice(0, 3)]);
+  $("bPos").textContent = `Câu ${fb.i + 1}/${fb.list.length}`;
+  box.className = tcls(s.p);
+  box.innerHTML = `<div class="pic">${picOf(s.p)}</div><div class="mid">${esc(s.p.vi)}</div><div class="big">${shown}</div><div class="mute">Chọn từ còn thiếu</div><div class="opts"></div>`;
+  const o = box.querySelector(".opts");
+  opts.forEach(w => {
+    const b = document.createElement("button"); b.textContent = w;
+    b.onclick = () => {
+      o.querySelectorAll("button").forEach(x => x.disabled = true); markStudy();
+      if (w === ans) { b.classList.add("ok"); fb.ok++; celebrate(b); } else { b.classList.add("bad"); [...o.children][opts.indexOf(ans)].classList.add("ok"); }
+      say(s.p.ru); setTimeout(() => { fb.i++; fbAsk(); }, w === ans ? 1200 : 2500);
+    };
+    o.appendChild(b);
+  });
+}
+
+// ---- word order: build the sentence from shuffled tiles
+let wo = null;
+function woStart() { wo = { list: shuffle(pickTopic("oTopic").filter(s => s.ru.split(" ").length >= 2)).slice(0, 10), i: 0, ok: 0 }; woAsk(); }
+function woAsk() {
+  const box = $("oCard"); $("oScore").textContent = `Đúng: ${wo.ok}`;
+  if (wo.i >= wo.list.length) { $("oPos").textContent = ""; return result(box, wo.ok, wo.list.length, woStart); }
+  const s = wo.list[wo.i], target = s.ru.split(" ").map(clean);
+  let tiles = shuffle(target.map((w, i) => ({ w, i })));
+  if (tiles.every((t, j) => t.i === j)) tiles.reverse(); // never start already solved
+  const picked = [];
+  $("oPos").textContent = `Câu ${wo.i + 1}/${wo.list.length}`;
+  box.className = tcls(s.p);
+  box.innerHTML = `<div class="pic">${picOf(s.p)}</div><div class="mid">${esc(s.p.vi)}</div><div class="slot"></div><div class="tiles"></div>` +
+    `<div class="row" style="justify-content:center"><button class="o-undo">↶ Xóa</button><button class="o-say">🔊 Gợi ý</button></div>`;
+  const slot = box.querySelector(".slot"), pool = box.querySelector(".tiles");
+  function draw() {
+    slot.innerHTML = picked.map(t => `<span class="tile">${esc(t.w)}</span>`).join(" ") || `<span class="mute">Bấm các từ theo đúng thứ tự</span>`;
+    pool.innerHTML = "";
+    tiles.forEach(t => {
+      const b = document.createElement("button"); b.className = "tile"; b.textContent = t.w; b.disabled = picked.includes(t);
+      b.onclick = () => { picked.push(t); draw(); if (picked.length === target.length) check(); };
+      pool.appendChild(b);
+    });
+  }
+  function check() {
+    markStudy();
+    const right = picked.map(t => t.w).join(" ") === target.join(" ");
+    if (right) { wo.ok++; celebrate(slot); }
+    slot.innerHTML = `<div class="${right ? "okt" : "badt"}">${right ? "✓ " : "✗ "}${esc(s.ru)}</div>`;
+    pool.querySelectorAll("button").forEach(b => b.disabled = true);
+    say(s.p.ru); setTimeout(() => { wo.i++; woAsk(); }, right ? 1500 : 3000);
+  }
+  box.querySelector(".o-undo").onclick = () => { picked.pop(); draw(); };
+  box.querySelector(".o-say").onclick = () => say(s.p.ru);
+  draw();
+}
+
+// ---- spelling: build a word from its letters
+const SPELL = [...A.map(a => ({ ru: noStress(a.ex), vi: a.vi })),
+  ...SENT.filter(s => !s.ru.includes(" ") && clean(s.ru).length <= 12).map(s => ({ ru: clean(s.ru), vi: s.p.vi }))]
+  .filter((x, i, arr) => x.ru.length >= 2 && arr.findIndex(y => y.ru.toLowerCase() === x.ru.toLowerCase()) === i);
+let sg = null;
+function sgStart() { sg = { list: shuffle(SPELL).slice(0, 10), i: 0, ok: 0 }; sgAsk(); }
+function sgAsk() {
+  const box = $("gCard"); $("gScore").textContent = `Đúng: ${sg.ok}`;
+  if (sg.i >= sg.list.length) { $("gPos").textContent = ""; return result(box, sg.ok, sg.list.length, sgStart); }
+  const x = sg.list[sg.i], target = [...x.ru.toLowerCase()];
+  let tiles = shuffle(target.map((c, i) => ({ c, i }))); if (tiles.every((t, j) => t.i === j)) tiles.reverse();
+  const picked = []; let miss = 0;
+  $("gPos").textContent = `Từ ${sg.i + 1}/${sg.list.length}`;
+  box.className = "card";
+  box.innerHTML = `<div class="mid">${esc(x.vi)}</div><div class="slot big"></div><div class="tiles"></div>` +
+    `<div class="row" style="justify-content:center"><button class="g-say">🔊 Nghe từ</button><button class="g-skip">Bỏ qua</button></div>`;
+  const slot = box.querySelector(".slot"), pool = box.querySelector(".tiles");
+  function draw() {
+    slot.textContent = target.map((c, i) => i < picked.length ? picked[i].c : "_").join(" ");
+    pool.innerHTML = "";
+    tiles.forEach(t => {
+      const b = document.createElement("button"); b.className = "tile big"; b.textContent = t.c; b.disabled = picked.includes(t);
+      b.onclick = () => {
+        if (t.c !== target[picked.length]) { miss++; b.classList.add("shake"); setTimeout(() => b.classList.remove("shake"), 400); return; }
+        picked.push(t); draw();
+        if (picked.length === target.length) { markStudy(); if (!miss) { sg.ok++; celebrate(slot); } say(x.ru); setTimeout(() => { sg.i++; sgAsk(); }, 1500); }
+      };
+      pool.appendChild(b);
+    });
+  }
+  box.querySelector(".g-say").onclick = () => say(x.ru);
+  box.querySelector(".g-skip").onclick = () => { slot.textContent = x.ru; say(x.ru); setTimeout(() => { sg.i++; sgAsk(); }, 2000); };
+  draw();
+}
+
+// ---- listen: hear a word, pick its first letter
+let ls = null;
+function lsStart() { ls = { list: shuffle(A).slice(0, 10), i: 0, ok: 0 }; lsAsk(); }
+function lsAsk() {
+  const box = $("lCard"); $("lScore").textContent = `Đúng: ${ls.ok}`;
+  if (ls.i >= ls.list.length) { $("lPos").textContent = ""; return result(box, ls.ok, ls.list.length, lsStart); }
+  const a = ls.list[ls.i], opts = shuffle([a, ...shuffle(A.filter(x => x !== a)).slice(0, 3)]);
+  $("lPos").textContent = `Từ ${ls.i + 1}/${ls.list.length}`;
+  box.className = "card";
+  box.innerHTML = `<button class="l-say big">🔊</button><div class="mute">Nghe từ rồi chọn chữ cái có trong từ đó</div><div class="opts four"></div>`;
+  box.querySelector(".l-say").onclick = () => say(a.ex); say(a.ex);
+  const o = box.querySelector(".opts");
+  opts.forEach(x => {
+    const b = document.createElement("button"); b.className = "big"; b.textContent = x.l;
+    b.onclick = () => {
+      o.querySelectorAll("button").forEach(bb => bb.disabled = true); markStudy();
+      if (x === a) { b.classList.add("ok"); ls.ok++; celebrate(b); } else { b.classList.add("bad"); [...o.children][opts.indexOf(a)].classList.add("ok"); }
+      box.querySelector(".mute").innerHTML = `<b>${esc(a.ex)}</b> ${esc(a.ph)} = ${esc(a.vi)}`;
+      setTimeout(() => { ls.i++; lsAsk(); }, 2200);
+    };
+    o.appendChild(b);
+  });
+}
+
+// ---- memory: match Russian with Vietnamese
+function mmStart() {
+  const box = $("mCard"), pairs = shuffle(pickTopic("mTopic").filter(s => s.ru.length <= 22)).slice(0, 6);
+  const cards = shuffle(pairs.flatMap(s => [{ s, ru: true }, { s, ru: false }]));
+  let open = [], found = 0, tries = 0;
+  box.className = "card"; box.innerHTML = `<div class="mute">Lật 2 thẻ: một câu tiếng Nga và nghĩa tiếng Việt của nó</div><div class="mem"></div><div class="mute m-tries"></div>`;
+  const grid = box.querySelector(".mem");
+  cards.forEach(c => {
+    const b = document.createElement("button"); b.className = "mc"; b.textContent = "?";
+    b.onclick = () => {
+      if (open.length === 2 || b.classList.contains("up")) return;
+      b.classList.add("up"); b.textContent = c.ru ? c.s.ru : c.s.p.vi; if (c.ru) say(c.s.p.ru);
+      open.push([b, c]);
+      if (open.length < 2) return;
+      tries++; box.querySelector(".m-tries").textContent = `Số lượt: ${tries}`;
+      const [[b1, c1], [b2, c2]] = open;
+      if (c1.s === c2.s && c1.ru !== c2.ru) {
+        b1.classList.add("ok"); b2.classList.add("ok"); open = []; found++; markStudy();
+        if (found === pairs.length) { celebrate(grid); box.querySelector(".m-tries").innerHTML = `🎉 Xong sau ${tries} lượt! <button class="m-again">Chơi lại</button>`; box.querySelector(".m-again").onclick = mmStart; }
+      } else setTimeout(() => { [b1, b2].forEach(x => { x.classList.remove("up"); x.textContent = "?"; }); open = []; }, 1100);
+    };
+    grid.appendChild(b);
+  });
+}
+
+["bTopic", "oTopic", "mTopic"].forEach(id => $(id).innerHTML = topics.map(t => `<option>${esc(t)}</option>`).join(""));
+$("bStart").onclick = fbStart; $("oStart").onclick = woStart; $("gStart").onclick = sgStart; $("lStart").onclick = lsStart; $("mStart").onclick = mmStart;
+console.assert(SENT.length > 80 && WORDS.length > 50 && SPELL.length > 30, "game data self-check");
+
+// ---- study by lesson session (data: du_lieu_buoi.js, audio: am_thanh/buoi/)
+const BUOI = window.BUOI || [];
+let lsDone = new Set(store.get("buoiDone", [])), lsRun = 0;
+const auKey = t => t.replace(/́/g, "").replace(/\s+/g, " ").trim();
+// play one item and resolve when it ends (browser voice: estimate the length)
+function playWait(text) {
+  return new Promise(res => {
+    const f = AU[auKey(text)];
+    if (!f) { tts(text); return setTimeout(() => res(text.length * 0.09), text.length * 90 + 500); }
+    playFile(f, () => res(0), res);
+  });
+}
+function lsFill() {
+  let html = "", part = null;
+  BUOI.forEach((b, i) => {
+    if (b.part !== part) { if (part !== null) html += "</optgroup>"; part = b.part; html += `<optgroup label="${esc(part)}">`; }
+    html += `<option value="${i}">${lsDone.has(b.n) ? "✓ " : ""}Buổi ${b.n} · ${esc(b.title)}</option>`;
+  });
+  $("uSel").innerHTML = html + "</optgroup>";
+}
+function lsShow() {
+  lsRun++; $("uPlay").textContent = "▶ Nghe cả buổi";
+  const b = BUOI[+$("uSel").value]; if (!b) return; store.set("buoi", +$("uSel").value);
+  loadPack("buoi_" + String(b.n).padStart(3, "0"));
+  const hide = $("uHide").checked;
+  $("uHead").innerHTML = `<div class="mid"><b>Buổi ${b.n}</b> · ${esc(b.title)}</div>` +
+    (b.goal ? `<div>🎯 ${esc(b.goal)}</div>` : "") + (b.src ? `<div class="mute">${esc(b.src)}</div>` : "") +
+    (b.review ? `<div class="mute">Buổi ôn tập: dưới đây là từ và câu của cả phần.</div>` : "") +
+    `<div class="row" style="justify-content:center;margin:8px 0 0"><a href="../05_lich_hoc_toi_T2_T6/BAI_GIANG_THEO_BUOI_T2_T6.html#${encodeURIComponent(b.id)}" target="_blank">📘 Mở bài giảng đầy đủ</a>` +
+    `<button id="uDone">${lsDone.has(b.n) ? "↺ Bỏ đánh dấu" : "✓ Đã học xong buổi này"}</button></div>`;
+  $("uDone").onclick = () => { lsDone.has(b.n) ? lsDone.delete(b.n) : (lsDone.add(b.n), celebrate($("uDone")), markStudy()); store.set("buoiDone", [...lsDone]); const v = $("uSel").value; lsFill(); $("uSel").value = v; lsShow(); };
+  $("uCount").textContent = `${b.items.length} từ/câu · Đã học ${lsDone.size}/${BUOI.length} buổi`;
+  $("uList").innerHTML = b.items.map((it, i) => `<div class="li" data-i="${i}"><button class="sp" aria-label="Nghe">🔊</button><div>` +
+    `<div class="ru">${esc(it.ru)}${it.nhai ? ' <span class="tag">đọc nhại</span>' : ""}</div>` +
+    (it.ph ? `<div class="ph">${esc(it.ph)}</div>` : "") + (it.vi ? `<div class="vi${hide ? " blur" : ""}">${esc(it.vi)}</div>` : "") + `</div></div>`).join("");
+}
+$("uList").onclick = e => {
+  const v = e.target.closest(".vi.blur"); if (v) return v.classList.remove("blur");
+  const li = e.target.closest(".li"); if (!li) return;
+  lsRun++; $("uPlay").textContent = "▶ Nghe cả buổi";
+  document.querySelectorAll("#uList .li.on").forEach(x => x.classList.remove("on")); li.classList.add("on");
+  const b = BUOI[+$("uSel").value];
+  loadPack("buoi_" + String(b.n).padStart(3, "0")).then(() => say(b.items[+li.dataset.i].ru));
+};
+// play every item, leaving a pause after each one so the learner can repeat it
+$("uPlay").onclick = async () => {
+  if ($("uPlay").textContent.startsWith("⏸")) { lsRun++; player.pause(); $("uPlay").textContent = "▶ Nghe cả buổi"; return; }
+  const run = ++lsRun, b = BUOI[+$("uSel").value], rows = [...document.querySelectorAll("#uList .li")];
+  await loadPack("buoi_" + String(b.n).padStart(3, "0"));
+  $("uPlay").textContent = "⏸ Dừng"; markStudy();
+  for (let i = 0; i < b.items.length && run === lsRun; i++) {
+    rows.forEach(r => r.classList.remove("on")); rows[i].classList.add("on"); rows[i].scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const dur = await playWait(b.items[i].ru);
+    if (run !== lsRun) return;
+    await new Promise(r => setTimeout(r, $("uRepeat").checked ? Math.max(1500, dur * 1300) : 500));
+  }
+  if (run === lsRun) { $("uPlay").textContent = "▶ Nghe cả buổi"; rows.forEach(r => r.classList.remove("on")); }
+};
+$("uSel").onchange = lsShow; $("uHide").onchange = lsShow;
+$("uPrev").onclick = () => { $("uSel").value = Math.max(0, +$("uSel").value - 1); lsShow(); };
+$("uNext").onclick = () => { $("uSel").value = Math.min(BUOI.length - 1, +$("uSel").value + 1); lsShow(); };
+if (BUOI.length) { lsFill(); $("uSel").value = Math.min(store.get("buoi", 0), BUOI.length - 1); lsShow(); }
+else $("uList").innerHTML = `<div class="mute">Không tìm thấy file du_lieu_buoi.js cạnh trang này.</div>`;
+console.assert(!BUOI.length || BUOI.every(b => b.items.length), "lesson data self-check");
+
+sNew(); showStats();
+$("voice").value = store.get("voice", "mix"); $("voice").onchange = () => store.set("voice", $("voice").value);
+setMode(mode); aSub("t"); fBuild();
+</script>
+<!-- tính năng dùng chung với app Android (05_app_android/nguon/web) -->
+<script src="kho_tu.js"></script><script src="app_tu_vung.js"></script><script src="app_nhiem_vu.js"></script><script src="app_viet_chu.js"></script><script src="tu_dien.js"></script><script src="doc_tu.js"></script><script src="truyen.js"></script><script src="app_truyen.js"></script><script src="app_phat_am.js"></script><script src="app_lo_trinh.js"></script>
+<!-- app Android và màn nhỏ: menu ☰ + thanh dưới như app; màn lớn trên web: giữ hàng tab của web -->
+<script>if(window.Android||matchMedia("(max-width:700px)").matches){var s=document.createElement("script");s.src="app_menu.js";document.body.appendChild(s)}else document.documentElement.classList.add("web-lon")</script>
+<style>.web-lon #bnav{display:none!important}.web-lon body{padding-bottom:0!important}.web-lon #lHead{top:0!important}.web-lon body.fullgame #game{position:static!important;background:none!important}.web-lon body.fullgame #gameFrame{height:92vh!important;border-radius:12px!important}.web-lon #gClose{display:none!important}</style>
+<!-- đồng bộ tiến độ qua tài khoản Google (Firebase) -->
+<script src="firebase_goi.js"></script><script src="firebase_cau_hinh.js"></script><script src="dong_bo.js"></script>
+</body>
+</html>

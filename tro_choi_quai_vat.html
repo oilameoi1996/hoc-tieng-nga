@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đẩy Lùi Quái Vật – Tiếng Nga</title>
+<style>
+/* Layout: one-screen game. Top bar, sky arena with word card floating at top, worker left, monster walking in from right. Deliberately single-theme (a daylight playground). */
+:root {
+  color-scheme: light;
+  --sky-top: #5fb4ec; --sky-bot: #bfe6fb;
+  --grass: #7cc94a; --grass-dark: #4f9a2b; --soil: #9a5b2c;
+  --ink: #17324a; --card: rgba(30, 72, 70, .82); --card-ink: #f4fbf6;
+  --lime: #a6e22e; --amber: #ffb43a; --bad: #ff5a5f; --bar: #10283b;
+  --display: "Baloo 2", "Be Vietnam Pro", system-ui, sans-serif;
+  --body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+html, body { height: 100%; }
+body { background: var(--bar); color: var(--card-ink); font-family: var(--body); display: flex; flex-direction: column; overflow: hidden; }
+[hidden] { display: none !important; }
+button { font: inherit; cursor: pointer; }
+button:focus-visible, select:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); background: var(--bar); }
+.brand { font-family: var(--display); font-weight: 800; font-size: 1.35rem; line-height: 1; }
+.brand small { display: block; font-family: var(--body); font-weight: 400; font-size: .72rem; opacity: .7; margin-top: 2px; }
+.stats { margin-left: auto; display: flex; gap: 14px; align-items: center; font-variant-numeric: tabular-nums; font-weight: 700; }
+.stat { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; }
+.stat span { font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; opacity: .65; font-weight: 600; }
+.hearts { color: var(--bad); font-size: 1.1rem; letter-spacing: 2px; }
+.iconbtn { background: rgba(255,255,255,.1); color: var(--card-ink); border: 0; border-radius: 8px; padding: 6px 10px; font-weight: 600; font-size: .85rem; }
+
+.arena { position: relative; flex: 1; min-height: 360px; overflow: hidden; background: linear-gradient(var(--sky-top), var(--sky-bot) 70%); }
+.cloud { position: absolute; background: #fff; border-radius: 40px; opacity: .9; animation: drift linear infinite; }
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.cloud::before { width: 50%; height: 140%; left: 15%; top: -60%; }
+.cloud::after { width: 35%; height: 110%; right: 15%; top: -40%; }
+@keyframes drift { from { transform: translateX(-20vw); } to { transform: translateX(120vw); } }
+.hills { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; }
+.hill { position: absolute; bottom: 30px; border-radius: 50% 50% 0 0; background: var(--grass); }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 36px; background: linear-gradient(var(--grass-dark) 0 10px, var(--soil) 10px); }
+.tree { position: absolute; bottom: 34px; width: 40px; height: 62px; }
+.tree::before { content: ""; position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--grass-dark); }
+.tree::after { content: ""; position: absolute; left: 16px; top: 36px; width: 8px; height: 26px; background: var(--soil); }
+
+.card { position: absolute; z-index: 5; left: 50%; top: 16px; transform: translateX(-50%); width: min(560px, calc(100% - 32px)); background: var(--card); backdrop-filter: blur(4px); border-radius: 18px; padding: 12px 16px 14px; text-align: center; box-shadow: 0 8px 24px rgba(10,40,40,.25); }
+.label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; color: var(--lime); text-transform: uppercase; }
+.meaning { font-family: var(--display); font-weight: 800; font-size: clamp(1.3rem, 4vw, 1.9rem); line-height: 1.2; margin: 2px 0 8px; text-wrap: balance; }
+.boxes { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+.box { width: clamp(26px, 7vw, 38px); height: clamp(32px, 8.5vw, 44px); border-radius: 7px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: clamp(1rem, 4vw, 1.4rem); background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.18); text-transform: uppercase; }
+.box.ok { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+.box.hint { background: var(--amber); color: var(--ink); border-color: var(--amber); }
+.box.cur { border-style: dashed; border-color: var(--card-ink); }
+.box.gap { background: transparent; border-color: transparent; width: 12px; }
+.box.bad { background: var(--bad); border-color: var(--bad); animation: shake .3s; }
+.box.miss { background: rgba(255,90,95,.3); border-color: var(--bad); }
+@keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.sub { min-height: 1.4em; margin-top: 8px; font-size: .9rem; opacity: .9; }
+.sub b { color: var(--lime); }
+.tools { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
+.tools button { background: rgba(255,255,255,.14); color: var(--card-ink); border: 0; border-radius: 999px; padding: 5px 12px; font-size: .8rem; font-weight: 600; }
+
+.actor { position: absolute; bottom: 30px; z-index: 3; }
+.worker { left: 4%; width: 84px; }
+.monster { width: 110px; left: 80%; transition: filter .2s; }
+.monster .body { animation: bob .6s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+@keyframes bob { to { transform: translateY(-6px) scaleY(.96); } }
+.monster.hit { filter: brightness(1.8) saturate(.4); }
+.monster.die { animation: pop .5s forwards; }
+@keyframes pop { to { transform: scale(1.6) rotate(20deg); opacity: 0; } }
+.hp { position: absolute; left: 10px; right: 10px; top: -14px; height: 7px; border-radius: 4px; background: rgba(0,0,0,.25); overflow: hidden; }
+.hp i { display: block; height: 100%; background: var(--bad); transition: width .25s; }
+.worker.throw svg { animation: throw .3s; }
+@keyframes throw { 40% { transform: rotate(-12deg); } }
+.danger { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 0 var(--bad); transition: box-shadow .3s; z-index: 4; }
+.danger.on { box-shadow: inset 0 0 60px 0 rgba(255,60,60,.55); }
+
+.proj { position: absolute; z-index: 4; width: 34px; height: 34px; pointer-events: none; }
+.proj svg { animation: spin .35s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.float { position: absolute; z-index: 6; font-family: var(--display); font-weight: 800; font-size: 1.3rem; color: #fff; text-shadow: 0 2px 0 var(--ink); pointer-events: none; animation: up 1s forwards; }
+@keyframes up { to { transform: translateY(-50px); opacity: 0; } }
+
+.overlay { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; background: rgba(16, 40, 59, .55); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.panel { background: #fffdf6; color: var(--ink); border-radius: 20px; padding: 22px; width: min(460px, 100%); max-height: 100%; overflow: auto; box-shadow: 0 16px 40px rgba(0,0,0,.3); }
+.panel h1, .panel h2 { font-family: var(--display); font-weight: 800; margin: 0; line-height: 1.1; text-wrap: balance; }
+.panel h1 { font-size: 2rem; }
+.panel p { margin: 6px 0 14px; line-height: 1.5; }
+.topics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.topics button { text-align: left; border: 2px solid #d9e4ea; background: #fff; color: var(--ink); border-radius: 12px; padding: 9px 11px; font-weight: 700; font-size: .9rem; line-height: 1.25; }
+.topics button small { display: block; font-weight: 400; font-size: .74rem; opacity: .7; }
+.topics button:last-child { grid-column: 1 / -1; }
+.topics button[aria-pressed="true"] { border-color: var(--grass-dark); background: #eef8e4; }
+.go { width: 100%; border: 0; border-radius: 12px; padding: 12px; background: var(--grass-dark); color: #fff; font-family: var(--display); font-weight: 800; font-size: 1.25rem; }
+.missed { margin: 10px 0 14px; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .9rem; }
+.missed li { display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid #e8eef1; padding-bottom: 4px; }
+.missed b { min-width: 0; }
+.missed span { opacity: .7; }
+.keys { font-size: .78rem; opacity: .7; margin-top: 10px; }
+.kb { background: var(--bar); padding: 6px 6px 10px; }
+.kr { display: flex; justify-content: center; gap: 4px; margin-bottom: 4px; }
+.k { flex: 1; max-width: 48px; height: 40px; border: 0; border-radius: 7px; background: rgba(255,255,255,.12); color: var(--card-ink); font-size: 1.1rem; font-weight: 700; position: relative; }
+.k i { position: absolute; top: 1px; right: 4px; font-size: .6rem; font-style: normal; opacity: .55; }
+.k.press { background: var(--lime); color: var(--ink); }
+#typer { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+@media (max-width: 520px) { .brand small { display: none; } .worker { width: 64px; } .monster { width: 86px; } .topics { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .cloud, .monster .body, .proj svg { animation: none; } }
+* { box-sizing: border-box; }
+body { margin: 0; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">Đẩy Lùi Quái Vật<small>Gõ từ tiếng Nga, ném cờ lê vào quái vật</small></div>
+  <div class="stats">
+    <div class="stat"><span>Điểm</span><b id="score">0</b></div>
+    <div class="stat"><span>Combo</span><b id="combo">x1</b></div>
+    <div class="stat"><span>Màn</span><b id="level">1</b></div>
+    <div class="stat"><span>Mạng</span><b class="hearts" id="hearts">♥♥♥</b></div>
+    <button class="iconbtn" id="soundBtn" aria-pressed="true">Âm thanh: bật</button>
+    <button class="iconbtn" id="kbBtn" aria-pressed="false">⌨ Bàn phím ảo</button>
+    <button class="iconbtn" id="fsBtn">⛶ Toàn màn hình</button>
+  </div>
+</header>
+
+<main class="arena" id="arena">
+  <div class="cloud" style="top:14%;width:90px;height:28px;animation-duration:70s;animation-delay:-20s"></div>
+  <div class="cloud" style="top:30%;width:60px;height:20px;animation-duration:90s;animation-delay:-60s"></div>
+  <div class="hills">
+    <div class="hill" style="left:-10%;width:60%;height:70%;background:#8fd45a"></div>
+    <div class="hill" style="left:40%;width:75%;height:60%"></div>
+  </div>
+  <div class="tree" style="left:22%"></div><div class="tree" style="left:93%"></div>
+  <div class="ground"></div>
+  <div class="danger" id="danger"></div>
+
+  <section class="card" aria-live="polite">
+    <div class="label">Gõ từ mang nghĩa</div>
+    <div class="meaning" id="meaning">…</div>
+    <div class="boxes" id="boxes"></div>
+    <div class="sub" id="sub"></div>
+    <div class="tools">
+      <button id="hintBtn" type="button">Gợi ý 1 chữ (Tab)</button>
+      <button id="speakBtn" type="button">Nghe phát âm</button>
+    </div>
+  </section>
+
+  <div class="actor worker" id="worker" aria-hidden="true">
+    <svg viewBox="0 0 80 110" width="100%">
+      <rect x="22" y="58" width="36" height="34" rx="6" fill="#2f6fb3"/>
+      <rect x="22" y="66" width="36" height="5" fill="#ffd23f"/>
+      <rect x="26" y="90" width="10" height="18" rx="3" fill="#24425f"/><rect x="44" y="90" width="10" height="18" rx="3" fill="#24425f"/>
+      <rect x="54" y="62" width="20" height="9" rx="4" fill="#2f6fb3" transform="rotate(-30 56 66)"/>
+      <circle cx="40" cy="40" r="17" fill="#f4c095"/>
+      <path d="M21 36a19 19 0 0 1 38 0z" fill="#ffd23f"/><rect x="18" y="34" width="44" height="5" rx="2" fill="#e8b500"/>
+      <circle cx="46" cy="43" r="2.4" fill="#17324a"/><path d="M42 51q5 4 9 0" stroke="#17324a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="actor monster" id="monster" aria-hidden="true">
+    <div class="hp"><i id="hpbar" style="width:100%"></i></div>
+    <svg class="body" viewBox="0 0 120 120" width="100%">
+      <path d="M30 34 L22 8 L44 26z M90 34 L98 8 L76 26z" fill="#f2b630"/>
+      <path d="M60 22 L66 8 L70 26z" fill="var(--mc2, #5a2fb8)"/>
+      <ellipse cx="60" cy="68" rx="44" ry="42" fill="var(--mc, #7b4fe0)"/>
+      <path d="M18 74 L4 92 M102 74 L116 92" stroke="var(--mc2, #5a2fb8)" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="44" cy="56" r="12" fill="#fff"/><circle cx="76" cy="56" r="12" fill="#fff"/>
+      <circle cx="41" cy="57" r="5" fill="#17324a"/><circle cx="73" cy="57" r="5" fill="#17324a"/>
+      <path d="M38 82 Q60 98 82 82 Z" fill="#17324a"/>
+      <path d="M46 84 l4 6 4-5 4 6 4-6 4 5 4-6" fill="#fff"/>
+      <rect x="36" y="104" width="14" height="10" rx="5" fill="var(--mc2, #5a2fb8)"/><rect x="70" y="104" width="14" height="10" rx="5" fill="var(--mc2, #5a2fb8)"/>
+    </svg>
+  </div>
+
+  <input id="typer" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Ô gõ chữ">
+
+  <div class="overlay" id="overlay">
+    <div class="panel" id="panel"></div>
+  </div>
+</main>
+<div class="kb" id="kb" hidden></div>
+
+<script src="du_lieu_buoi.js"></script>
+<script src="am_thanh/danh_sach.js"></script>
+<script src="am_thanh/buoi/danh_sach_buoi.js"></script>
+<script src="am_thanh/goi/chung.js"></script>
+<script>
+// Topics = the course parts of du_lieu_buoi.js ("PHẦN 4 · BÀI 7-8: ... · BUỔI 19-24"); words = single words / short pairs that have a meaning.
+// Each word: [russian, transliteration, Vietnamese, session number, raw text with stress marks]
+const norm = s => s.replace(/́/g, "").replace(/\s+/g, " ").trim();
+const BANK = {}, seen = new Set();
+for (const b of window.BUOI || []) {
+  const key = "p" + b.part.replace(/^PHẦN (\d+).*/, "$1");
+  const t = BANK[key] = BANK[key] || { name: b.part.replace(/ · BUỔI.*$/, "").toLowerCase().replace(/^phần (\d+) · (.)/, (_, n, c) => `Phần ${n} · ${c.toUpperCase()}`), note: "", from: b.n, to: b.n, words: [] };
+  t.to = b.n; t.note = `buổi ${t.from}-${t.to}`;
+  for (const it of b.items || []) {
+    if (!it.vi) continue;
+    const ru = norm(it.ru);
+    if (/[\/,.!?…()=;:«»"]/.test(ru) || ru.split(" ").length > 2 || ru.length > 14 || seen.has(ru.toLowerCase())) continue;
+    seen.add(ru.toLowerCase());
+    t.words.push([ru, it.ph || "", it.vi, b.n, it.ru]);
+  }
+}
+for (const k in BANK) if (BANK[k].words.length < 3) delete BANK[k];
+BANK.all = { name: "Trộn tất cả", note: "mọi bài học", words: Object.values(BANK).flatMap(t => t.words) };
+
+const MONSTERS = [["#7b4fe0","#5a2fb8"],["#e0544f","#a8302c"],["#2fae8f","#1c7a63"],["#e08a2f","#a85e14"],["#3f6fe0","#2447a8"]];
+const $ = id => document.getElementById(id);
+const store = { get(k){ try { return localStorage.getItem(k); } catch { return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch {} } };
+
+let topic = store.get("dlqv-ru-topic") || "p1";
+if (!BANK[topic]) topic = Object.keys(BANK)[0];
+let sound = store.get("dlqv-ru-sound") !== "0";
+let S = null; // game state
+let last = 0;
+
+// ---- audio (WebAudio beeps, started only after a click/keypress) ----
+let actx = null;
+function beep(freq, dur = .08, type = "square", vol = .05) {
+  if (!sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = freq; g.gain.value = vol;
+    g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + dur);
+    o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + dur);
+  } catch {}
+}
+const AU = window.AM_THANH || {}, GOI = window.GOI_AM = window.GOI_AM || {}, packs = {};
+// session sounds are embedded in am_thanh/goi/buoi_NNN.js (same packs as hoc_tieng_nga.html), loaded on demand
+const loadPack = n => packs[n] = packs[n] || new Promise(res => {
+  const s = document.createElement("script"); s.src = "am_thanh/goi/buoi_" + String(n).padStart(3, "0") + ".js"; s.onload = s.onerror = () => res(); document.head.appendChild(s);
+});
+let player = new Audio();
+async function speak(word) {
+  if (!sound || !word) return;
+  const f = AU[word.w] || AU[norm(word.raw || "")];
+  try { speechSynthesis.cancel(); } catch {}
+  if (f && !GOI[f] && word.n) await loadPack(word.n);
+  if (f) { player.pause(); player = new Audio(GOI[f] ? GOI[f][0] : "am_thanh/" + f); return player.play().catch(() => tts(word.w)); }
+  tts(word.w);
+}
+function tts(t) {
+  try { const u = new SpeechSynthesisUtterance(t); u.lang = "ru-RU"; u.rate = .85;
+    const v = speechSynthesis.getVoices().find(v => /^ru/i.test(v.lang)); if (v) u.voice = v; speechSynthesis.speak(u); } catch {}
+}
+
+// ---- game ----
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function newGame() {
+  S = { queue: shuffle([...BANK[topic].words]), score: 0, combo: 1, hearts: 3, level: 1, killed: 0,
+        x: .8, hp: 3, maxHp: 3, word: null, pos: 0, hinted: new Set(), missed: [], running: true, paused: false, lock: false };
+  spawnMonster(); nextWord(); hud();
+  $("overlay").hidden = true; focusTyper();
+  last = performance.now(); requestAnimationFrame(loop);
+}
+
+function spawnMonster() {
+  const [c1, c2] = MONSTERS[S.killed % MONSTERS.length];
+  const m = $("monster");
+  m.classList.remove("die"); m.style.setProperty("--mc", c1); m.style.setProperty("--mc2", c2);
+  S.maxHp = S.hp = 3 + S.level; S.x = .8; drawMonster();
+}
+
+function nextWord() {
+  if (!S.queue.length) S.queue = shuffle([...BANK[topic].words]);
+  const [w, ipa, vi, n, raw] = S.queue.pop();
+  S.word = { w, ipa, vi, n, raw }; loadPack(n); S.pos = 0; S.hinted = new Set(); S.lock = false;
+  skipNonLetters();
+  $("meaning").textContent = vi; $("sub").textContent = "";
+  renderBoxes();
+}
+
+const isL = ch => /[а-яё]/i.test(ch);
+const same = (a, b) => a.toLowerCase().replace("ё", "е") === b.toLowerCase().replace("ё", "е");
+function skipNonLetters() { while (S.pos < S.word.w.length && !isL(S.word.w[S.pos])) S.pos++; }
+
+function renderBoxes(badAt = -1, reveal = false) {
+  const w = S.word.w, box = $("boxes"); box.innerHTML = "";
+  [...w].forEach((ch, i) => {
+    const d = document.createElement("div");
+    if (!isL(ch)) { d.className = "box gap"; box.append(d); return; }
+    d.className = "box";
+    if (i < S.pos) { d.textContent = ch; d.classList.add(S.hinted.has(i) ? "hint" : "ok"); }
+    else if (reveal) { d.textContent = ch; d.classList.add("miss"); }
+    else if (i === badAt) d.classList.add("bad");
+    else if (i === S.pos) d.classList.add("cur");
+    box.append(d);
+  });
+}
+
+function typeLetter(ch) {
+  if (!S || !S.running || S.paused || S.lock) return;
+  if (!isL(ch)) return;
+  if (same(ch, S.word.w[S.pos])) {
+    S.pos++; skipNonLetters(); beep(660 + S.pos * 40, .05);
+    if (S.pos >= S.word.w.length) return wordDone();
+    renderBoxes();
+  } else {
+    S.combo = 1; S.x -= .015; beep(140, .15, "sawtooth"); renderBoxes(S.pos); hud();
+  }
+}
+
+function hint() {
+  if (!S || !S.running || S.paused || S.lock) return;
+  S.hinted.add(S.pos); S.combo = 1; S.pos++; skipNonLetters(); beep(440, .06, "triangle");
+  if (S.pos >= S.word.w.length) return wordDone();
+  renderBoxes(); hud();
+}
+
+function wordDone() {
+  S.lock = true; renderBoxes();
+  const { w, ipa, vi } = S.word;
+  const letters = [...w].filter(isL).length - S.hinted.size;
+  const pts = Math.max(0, letters) * 10 * S.combo;
+  S.score += pts;
+  $("sub").innerHTML = `<b>${w}</b> ${ipa} · ${vi}`;
+  speak(S.word);
+  throwAt(() => {
+    S.hp--; S.x = Math.min(.82, S.x + .1 + letters * .008);
+    floatText(`+${pts}`);
+    if (S.hinted.size === 0) S.combo = Math.min(S.combo + 1, 5);
+    if (S.hp <= 0) killMonster();
+    hud(); drawMonster();
+    setTimeout(() => S.running && nextWord(), 900);
+  });
+}
+
+function throwAt(onHit) {
+  const arena = $("arena").getBoundingClientRect(), wk = $("worker").getBoundingClientRect(), mo = $("monster").getBoundingClientRect();
+  const p = document.createElement("div"); p.className = "proj";
+  p.innerHTML = '<svg viewBox="0 0 40 40" width="34" height="34"><path d="M8 6a9 9 0 0 0 9 13l14 14a3 3 0 0 0 4-4L21 15A9 9 0 0 0 8 6l5 5-2 4-4 1-5-5" fill="#c7d3dc" stroke="#17324a" stroke-width="2.5" stroke-linejoin="round"/></svg>';
+  $("arena").append(p);
+  const x0 = wk.right - arena.left - 20, y0 = wk.top - arena.top + 20;
+  const x1 = mo.left - arena.left + mo.width / 2 - 17, y1 = mo.top - arena.top + mo.height / 2 - 17;
+  const t0 = performance.now(), dur = 380;
+  $("worker").classList.add("throw"); beep(300, .1, "triangle");
+  (function fly(t) {
+    const k = Math.min(1, (t - t0) / dur);
+    p.style.left = x0 + (x1 - x0) * k + "px";
+    p.style.top = y0 + (y1 - y0) * k - Math.sin(k * Math.PI) * 70 + "px";
+    if (k < 1) return requestAnimationFrame(fly);
+    p.remove(); $("worker").classList.remove("throw");
+    const m = $("monster"); m.classList.add("hit"); setTimeout(() => m.classList.remove("hit"), 180);
+    beep(90, .15, "square", .08); onHit();
+  })(t0);
+}
+
+function killMonster() {
+  S.killed++; S.score += 50 * S.level; floatText(`Hạ gục! +${50 * S.level}`);
+  $("monster").classList.add("die"); beep(880, .3, "triangle", .07);
+  S.level++;
+  setTimeout(() => S.running && spawnMonster(), 600);
+}
+
+function floatText(t) {
+  const arena = $("arena").getBoundingClientRect(), mo = $("monster").getBoundingClientRect();
+  const f = document.createElement("div"); f.className = "float"; f.textContent = t;
+  f.style.left = Math.min(mo.left - arena.left, arena.width - 160) + "px"; f.style.top = mo.top - arena.top - 30 + "px";
+  $("arena").append(f); setTimeout(() => f.remove(), 1000);
+}
+
+function monsterReached() {
+  S.hearts--; S.combo = 1; beep(110, .4, "sawtooth", .08);
+  S.missed.push(S.word); S.lock = true; S.pos = S.pos; renderBoxes(-1, true);
+  $("sub").innerHTML = `Đáp án: <b>${S.word.w}</b> ${S.word.ipa}`; speak(S.word);
+  hud();
+  if (S.hearts <= 0) return gameOver();
+  S.x = .8; drawMonster();
+  setTimeout(() => S.running && nextWord(), 1600);
+}
+
+function drawMonster() {
+  const arena = $("arena").clientWidth, m = $("monster");
+  m.style.left = (S.x * arena) + "px";
+  $("hpbar").style.width = (100 * S.hp / S.maxHp) + "%";
+  $("danger").classList.toggle("on", S.x < .32);
+}
+
+function loop(t) {
+  if (!S || !S.running) return;
+  const dt = Math.min(.05, (t - last) / 1000); last = t;
+  if (!S.paused && !S.lock) {
+    const speed = .018 + S.level * .006; // fraction of arena width per second
+    S.x -= speed * dt;
+    const workerEdge = ($("worker").getBoundingClientRect().right - $("arena").getBoundingClientRect().left) / $("arena").clientWidth;
+    if (S.x <= workerEdge) monsterReached(); else drawMonster();
+  }
+  requestAnimationFrame(loop);
+}
+
+function hud() {
+  $("score").textContent = S.score; $("combo").textContent = "x" + S.combo; $("level").textContent = S.level;
+  $("hearts").textContent = "♥".repeat(Math.max(0, S.hearts)) + "♡".repeat(3 - Math.max(0, S.hearts));
+}
+
+function gameOver() {
+  S.running = false;
+  const best = Math.max(S.score, +store.get("dlqv-ru-best") || 0); store.set("dlqv-ru-best", best);
+  const missed = S.missed.map(m => `<li><b>${m.w}</b> <span>${m.ipa}</span> ${m.vi}</li>`).join("");
+  showPanel(`<h2>Quái vật đã tới nơi!</h2>
+    <p>Bạn được <b>${S.score}</b> điểm, hạ ${S.killed} quái vật. Kỷ lục: <b>${best}</b>.</p>
+    ${missed ? `<b>Từ cần ôn lại</b><ul class="missed">${missed}</ul>` : ""}
+    ${topicPicker()}<button class="go" id="goBtn">Chơi lại</button>`);
+}
+
+function topicPicker() {
+  return `<div class="topics" role="group" aria-label="Chủ đề">${Object.entries(BANK).map(([k, t]) =>
+    `<button type="button" data-topic="${k}" aria-pressed="${k === topic}">${t.name}<small>${t.words.length} từ · ${t.note}</small></button>`).join("")}</div>`;
+}
+
+function showPanel(html) {
+  $("panel").innerHTML = html; $("overlay").hidden = false;
+  $("panel").querySelectorAll("[data-topic]").forEach(b => b.onclick = () => {
+    topic = b.dataset.topic; store.set("dlqv-ru-topic", topic);
+    $("panel").querySelectorAll("[data-topic]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  });
+  $("goBtn").onclick = newGame; $("goBtn").focus();
+}
+
+function startScreen() {
+  const best = +store.get("dlqv-ru-best") || 0;
+  showPanel(`<h1>Đẩy Lùi Quái Vật</h1>
+    <p>Nhìn nghĩa tiếng Việt, gõ từng chữ cái của từ tiếng Nga. Gõ đúng cả từ, bác thợ ném cờ lê đẩy quái vật lùi lại. Để quái vật chạm tới là mất 1 mạng.</p>
+    ${topicPicker()}<button class="go" id="goBtn">Bắt đầu</button>
+    <div class="keys">Gõ bằng bộ gõ tiếng Nga (Win + Space), hoặc gõ phím Latin: máy tự đổi theo bàn phím Nga ЙЦУКЕН (bật "Bàn phím ảo" để xem vị trí). Tab: gợi ý 1 chữ · Esc: tạm dừng${best ? ` · Kỷ lục: ${best}` : ""}</div>`);
+}
+
+function togglePause() {
+  if (!S || !S.running) return;
+  S.paused = !S.paused;
+  if (S.paused) {
+    $("panel").innerHTML = `<h2>Tạm dừng</h2><p>Bấm Tiếp tục hoặc Esc để chơi tiếp.</p><button class="go" id="goBtn">Tiếp tục</button>`;
+    $("overlay").hidden = false; $("goBtn").onclick = togglePause; $("goBtn").focus();
+  } else { $("overlay").hidden = true; focusTyper(); }
+}
+
+// ---- input: hidden text field so phone keyboards open; physical keys handled directly ----
+function focusTyper() { try { $("typer").focus({ preventScroll: true }); } catch {} }
+$("typer").addEventListener("input", e => { const v = e.target.value; e.target.value = ""; for (const ch of v) typeLetter(ch); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { e.preventDefault(); return togglePause(); }
+  if (!S || !S.running || S.paused) return;
+  if (e.key === "Tab") { e.preventDefault(); return hint(); }
+  if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+  const ch = isL(e.key) ? e.key : CODE[e.code];
+  if (ch) { e.preventDefault(); typeLetter(ch); flashKey(ch); focusTyper(); }
+});
+$("arena").addEventListener("pointerup", e => { if (S && S.running && !S.paused && !e.target.closest("button")) focusTyper(); });
+$("hintBtn").onclick = () => { hint(); focusTyper(); };
+$("speakBtn").onclick = () => { if (S && S.word) speak(S.word); focusTyper(); };
+$("soundBtn").onclick = () => { sound = !sound; store.set("dlqv-ru-sound", sound ? "1" : "0"); paintSound(); };
+function paintSound() { $("soundBtn").textContent = "Âm thanh: " + (sound ? "bật" : "tắt"); $("soundBtn").setAttribute("aria-pressed", sound); }
+window.addEventListener("resize", () => S && drawMonster());
+document.addEventListener("visibilitychange", () => { if (document.hidden && S && S.running && !S.paused) togglePause(); });
+
+// Russian ЙЦУКЕН layout by physical key position (works with any Windows keyboard language)
+const ROWS = [["ё`","й q","ц w","у e","к r","е t","н y","г u","ш i","щ o","з p","х [","ъ ]"],
+              ["ф a","ы s","в d","а f","п g","р h","о j","л k","д l","ж ;","э '"],
+              ["я z","ч x","с c","м v","и b","т n","ь m","б ,","ю ."]];
+const CODE = {};
+const codeOf = l => ({ "`": "Backquote", "[": "BracketLeft", "]": "BracketRight", ";": "Semicolon", "'": "Quote", ",": "Comma", ".": "Period" }[l] || "Key" + l.toUpperCase());
+$("kb").innerHTML = ROWS.map(r => '<div class="kr">' + r.map(s => { const ru = s[0], lat = s.slice(-1); CODE[codeOf(lat)] = ru;
+  return `<button type="button" class="k" data-k="${ru}">${ru}<i>${lat}</i></button>`; }).join("") + "</div>").join("");
+$("kb").addEventListener("pointerdown", e => { const k = e.target.closest(".k"); if (k) { e.preventDefault(); typeLetter(k.dataset.k); flashKey(k.dataset.k); } });
+function flashKey(ch) { const k = $("kb").querySelector(`[data-k="${ch.toLowerCase()}"]`); if (k) { k.classList.add("press"); setTimeout(() => k.classList.remove("press"), 120); } }
+$("kbBtn").onclick = () => { const on = $("kb").hidden; $("kb").hidden = !on; $("kbBtn").setAttribute("aria-pressed", on); store.set("dlqv-ru-kb", on ? "1" : "0"); S && drawMonster(); };
+if (store.get("dlqv-ru-kb") === "1") { $("kb").hidden = false; $("kbBtn").setAttribute("aria-pressed", "true"); }
+$("fsBtn").onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => alert("Trình duyệt chưa cho phóng to ở đây, anh nhấn F11 nhé."));
+document.addEventListener("fullscreenchange", () => { $("fsBtn").textContent = document.fullscreenElement ? "🗗 Thu nhỏ" : "⛶ Toàn màn hình"; S && drawMonster(); });
+
+// first frame: show a sample word behind the start panel so the scene is not empty
+paintSound();
+S = { word: { w: "город", ipa: "[GÔ-rat]", vi: "thành phố" }, pos: 2, hinted: new Set(), x: .8, hp: 3, maxHp: 3, score: 0, combo: 1, level: 1, hearts: 3, running: false };
+$("meaning").textContent = S.word.vi; renderBoxes(); drawMonster(); hud();
+startScreen();
+</script>
+
+</body>
+</html>
