@@ -37,7 +37,7 @@
     return ids.slice(0, 3);
   }
   const quests = d => d.q.map(i => POOL[i]);
-  const MONTH_GOAL = 70, QUEST_PTS = 1;
+  const MONTH_GOAL = 50, QUEST_PTS = 1;
   const doneCount = d => quests(d).filter(q => q.val(d) >= q.goal).length;
 
   function addKn(n) { day().kn += n; nv.totalKn += n; save(); if (!box.classList.contains("hide")) render(); }
