@@ -36,8 +36,14 @@
     for (let i = ids.length - 1; i > 0; i--) { h = (h * 1103515245 + 12345) >>> 0; const j = h % (i + 1); [ids[i], ids[j]] = [ids[j], ids[i]]; }
     return ids.slice(0, 3);
   }
-  const quests = d => d.q.map(i => POOL[i]);
-  const MONTH_GOAL = 50, QUEST_PTS = 1;
+  // nhiệm vụ hằng ngày cố định theo yêu cầu (kho POOL ở trên không còn dùng để bốc ngẫu nhiên)
+  const DAILY = [
+    { t: "Kiếm 50 KN", goal: 50, val: d => d.kn },
+    { t: "📚 Nghe 20 từ/câu trong bài học theo buổi", goal: 20, val: d => d.nghe || 0 },
+    { t: "✅ Trả lời đúng 8 câu Trắc nghiệm", goal: 8, val: d => N(d.ok, "quiz") },
+  ];
+  const quests = () => DAILY;
+  const MONTH_GOAL = 50, MONTH_DAYS = 20, QUEST_PTS = 1;
   const doneCount = d => quests(d).filter(q => q.val(d) >= q.goal).length;
 
   function addKn(n) { day().kn += n; nv.totalKn += n; save(); if (!box.classList.contains("hide")) render(); }
@@ -57,6 +63,8 @@
     setTimeout(() => alert(`🧊 Đã dùng ${gap} đóng băng để giữ chuỗi ${s.n} ngày học!`), 300);
   }
   window.markStudy = function () { useFreeze(); inc("act", cur); addKn(1); return _ms.apply(this, arguments); };
+  // đếm lượt nghe trong bài học theo buổi (bấm từng từ/câu hoặc phát cả buổi)
+  ["say", "playWait"].forEach(f => { const o = window[f]; if (o) window[f] = function () { if (cur === "lesson") { day().nghe = (day().nghe || 0) + 1; save(); } return o.apply(this, arguments); }; });
   window.celebrate = function () { inc("ok", cur); addKn(3); return _ce.apply(this, arguments); };
   let buoiN = store.get("buoiDone", []).length;
   store.set = function (k, v) {
@@ -69,7 +77,7 @@
   const css = document.createElement("style");
   css.textContent = "#nv{--pk:#d0609f}#nv .hd{background:var(--pk);color:#fff;border-radius:14px;padding:18px 16px 16px;margin-bottom:16px}" +
     "#nv .hd h2{margin:0;font-size:24px}#nv .hd .tm{opacity:.9;font-weight:600;font-size:14px;margin:4px 0 12px}" +
-    "#nv .mb{background:#1d2226;border-radius:12px;padding:14px;color:#fff}#nv .mb b{display:block;margin-bottom:8px;font-size:17px}" +
+    "#nv .mb{background:#1d2226;border-radius:12px;padding:14px;color:#fff}#nv .mb b{display:block;margin-bottom:8px;font-size:17px}#nv .mb .pb{margin-bottom:14px}#nv .mb .mh{display:block;color:#c9d1d6;font-size:14px}" +
     "#nv .pb{position:relative;height:22px;background:#3a4147;border-radius:11px;overflow:hidden}#nv .pb i{position:absolute;inset:0 auto 0 0;background:var(--pk);border-radius:11px}" +
     "#nv .pb span{position:absolute;inset:0;text-align:center;font-size:13px;font-weight:700;line-height:22px;color:#fff}" +
     "#nv .sec{display:flex;justify-content:space-between;color:var(--mute);font-weight:700;font-size:13px;letter-spacing:.5px;margin:18px 2px 8px}" +
@@ -108,6 +116,8 @@
   const BADGE = [["❄️", "#7cc4ff"], ["💝", "#ff8fb1"], ["🌸", "#ffb3d1"], ["🌧️", "#8fb8ff"], ["🌼", "#ffe066"], ["☀️", "#ffb347"],
     ["🏖️", "#5ed3c5"], ["🍉", "#7bd88f"], ["📚", "#b48cff"], ["🍂", "#ff9f5a"], ["🪆", "#ff6b6b"], ["🎄", "#4cc782"]];
   const studied = k => ((nv.days[k] || {}).kn || 0) > 0;
+  const monthDays = ym => Object.keys(nv.days).filter(k => k.startsWith(ym) && studied(k)).length;
+  const monthOk = ym => monthPts(ym) >= MONTH_GOAL && monthDays(ym) >= MONTH_DAYS;
   const monthPts = ym => Object.entries(nv.days).filter(([k]) => k.startsWith(ym)).reduce((s, [, x]) => s + doneCount(x) * QUEST_PTS, 0);
   let calOff = 0;
   function calendar(now) {
@@ -132,8 +142,8 @@
   function badges(now) {
     const years = [...new Set([now.getFullYear(), ...Object.keys(nv.days).map(k => +k.slice(0, 4))])].sort((a, b) => b - a);
     return years.map(y => `<div class="sec"><span>HUY HIỆU ${y}</span></div><div class="bd">` + BADGE.map(([e, c], i) => {
-      const ym = `${y}-${pad(i + 1)}`, cur = ym === dkey(now).slice(0, 7), fut = ym > dkey(now).slice(0, 7), got = monthPts(ym) >= MONTH_GOAL;
-      return `<div class="${fut ? "lk no" : got ? "" : "no"}" style="--bc:${c}"><i>${fut ? "🔒" : e}</i>Tháng ${i + 1}${cur && !got ? `<br><small>${monthPts(ym)}/${MONTH_GOAL}</small>` : ""}</div>`;
+      const ym = `${y}-${pad(i + 1)}`, cur = ym === dkey(now).slice(0, 7), fut = ym > dkey(now).slice(0, 7), got = monthOk(ym);
+      return `<div class="${fut ? "lk no" : got ? "" : "no"}" style="--bc:${c}"><i>${fut ? "🔒" : e}</i>Tháng ${i + 1}${cur && !got ? `<br><small>${monthPts(ym)}/${MONTH_GOAL} · ${monthDays(ym)}/${MONTH_DAYS} ngày</small>` : ""}</div>`;
     }).join("") + "</div>").join("");
   }
   const bar = (v, g) => `<div class="pb"><i style="width:${Math.min(100, v / g * 100)}%"></i><span>${Math.min(v, g)} / ${g}</span></div>`;
@@ -141,9 +151,9 @@
   function render() {
     const now = new Date(), d = day(), ym = dkey(now).slice(0, 7);
     const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate() + 1;
-    const pts = monthPts(ym);
+    const pts = monthPts(ym), mdays = monthDays(ym), got = monthOk(ym);
     // huy hiệu tháng thưởng 100 kim cương, mỗi tháng một lần
-    if (pts >= MONTH_GOAL && !nv.badgeGems[ym]) { nv.badgeGems[ym] = 1; nv.gems += 100; save(); setTimeout(() => alert(`🏅 Nhận huy hiệu tháng ${now.getMonth() + 1}! +100 💎`), 300); }
+    if (got && !nv.badgeGems[ym]) { nv.badgeGems[ym] = 1; nv.gems += 100; save(); setTimeout(() => alert(`🏅 Nhận huy hiệu tháng ${now.getMonth() + 1}! +100 💎`), 300); }
     const mins = Math.ceil((new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now) / 60000);
     const left = mins >= 60 ? `${Math.floor(mins / 60)} GIỜ` : `${mins} PHÚT`;
     const week = [...Array(7)].map((_, i) => { const t = new Date(now); t.setDate(now.getDate() - 6 + i); return t; });
@@ -152,7 +162,8 @@
     const st = store.get("streak", { n: 0 }), words = store.get("vocabBatches", []).flat().length;
     box.innerHTML =
       `<div class="hd"><h2>Nhiệm vụ tháng ${MONTHS[now.getMonth()]}</h2><div class="tm">⏱ ${daysLeft} NGÀY</div>` +
-      `<div class="mb"><b>${pts >= MONTH_GOAL ? `🏅 Đã nhận huy hiệu tháng ${now.getMonth() + 1}! ` : ""}Kiếm ${MONTH_GOAL} điểm nhiệm vụ để nhận huy hiệu ${BADGE[now.getMonth()][0]}</b>${bar(pts, MONTH_GOAL)}</div></div>` +
+      `<div class="mb">${got ? `<b>🏅 Đã nhận huy hiệu tháng ${now.getMonth() + 1}!</b>` : ""}<b>Kiếm ${MONTH_GOAL} điểm nhiệm vụ</b>${bar(pts, MONTH_GOAL)}` +
+      `<b>Học đủ ${MONTH_DAYS} ngày trong tháng</b>${bar(mdays, MONTH_DAYS)}<small class="mh">Làm được cả hai thì nhận huy hiệu thử thách tháng ${BADGE[now.getMonth()][0]}</small></div></div>` +
       `<div class="sec"><span>NHIỆM VỤ HẰNG NGÀY</span><span>⏱ ${left}</span></div>` +
       quests(d).map((q, i) => {
         const v = q.val(d), ok = v >= q.goal, op = d.open[i];
@@ -171,7 +182,7 @@
       `<div class="st"><div><b>🔥 ${st.n}</b><small>ngày liên tiếp</small></div><div><b>⚡ ${nv.totalKn}</b><small>tổng KN</small></div><div><b>⏱ ${totMin}</b><small>phút đã học</small></div>` +
       `<div><b>📚 ${store.get("buoiDone", []).length}</b><small>buổi đã xong</small></div><div><b>⭐ ${store.get("known", []).length}</b><small>câu đã thuộc</small></div><div><b>🆕 ${words}</b><small>từ mới đã mở</small></div></div>` +
       `<div class="sec"><span>HUY HIỆU THỬ THÁCH THÁNG</span></div>${badges(now)}` +
-      `<p class="hint">Ngày có làm bài (có KN) được tô màu trên lịch. Kim cương 💎: mở rương được 5–15, nhận huy hiệu tháng được 100. KN: +1 mỗi lần làm bài, +3 mỗi câu đúng, +10 khi học xong một buổi. Mỗi nhiệm vụ ngày hoàn thành được ${QUEST_PTS} điểm nhiệm vụ tháng; đủ ${MONTH_GOAL} điểm trong tháng thì nhận huy hiệu tháng đó; mở rương để nhận thêm KN.</p>`;
+      `<p class="hint">Ngày có làm bài (có KN) được tô màu trên lịch. Kim cương 💎: mở rương được 5–15, nhận huy hiệu tháng được 100. KN: +1 mỗi lần làm bài, +3 mỗi câu đúng, +10 khi học xong một buổi. Mỗi nhiệm vụ ngày hoàn thành được ${QUEST_PTS} điểm nhiệm vụ tháng; đủ ${MONTH_GOAL} điểm và học đủ ${MONTH_DAYS} ngày trong tháng thì nhận huy hiệu tháng đó; "Nghe từ/câu" tính mỗi lần bấm nghe hoặc phát cả buổi trong mục Học theo buổi; mở rương để nhận thêm KN.</p>`;
   }
 
   box.onclick = e => {
